@@ -7,12 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id                  String        @id @default(uuid()) @db.Uuid
-  username            String        @db.VarChar(30)
-  email               String        @db.VarChar
-  password            String        @db.VarChar
+  id         String   @id @default(uuid()) @db.Uuid
+  username   String   @db.VarChar(30)
+  email      String   @db.VarChar
+  password   String   @db.VarChar
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+
+  user_profile UserProfile?
+  avatar       Avatar[]
+  files        File[]
 
   @@map("user")
+}
+
+model UserProfile {
+  id      String @id @default(uuid()) @db.Uuid
+  user_id String @unique @db.Uuid
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_profile")
+}
+
+model File {
+  id         String   @id @default(uuid()) @db.Uuid
+  file_id    String   @db.VarChar
+  bucket     String   @db.VarChar
+  url        String   @db.Text
+  user_id    String   @db.Uuid
+  created_at DateTime @default(now()) @map("created_at")
+
+  user   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  avatars Avatar[]
+
+  @@map("file")
+}
+
+model Avatar {
+  id      String @id @default(uuid()) @db.Uuid
+  user_id String @db.Uuid
+  file_id String @db.Uuid
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  file File @relation(fields: [file_id], references: [id], onDelete: Cascade)
+
+  @@map("avatar")
 }

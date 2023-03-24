@@ -1,13 +1,20 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from './common/common.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-        envFilePath: `.env.${process.env.NODE_ENV}`
+    ConfigModule.forRoot(),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+        driver: ApolloDriver,
+        autoSchemaFile: true,
+        // sortSchema: true,
     }),
-    CommonModule
+    CommonModule,
+    CoreModule
   ],
   controllers: [],
   providers: [],
