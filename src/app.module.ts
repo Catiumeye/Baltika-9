@@ -9,6 +9,10 @@ import { CoreModule } from './core/core.module';
   imports: [
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
+        // formatError: (err) => {
+            
+        //     return {message: err.message}
+        // },
         driver: ApolloDriver,
         autoSchemaFile: true,
         // sortSchema: true,

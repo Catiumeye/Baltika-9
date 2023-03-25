@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { UserProfile } from "core/user-profile/user-profile.entity";
 
 
 @ObjectType()
@@ -7,14 +8,17 @@ export class User {
     id: string;
 
     @Field(() => String)
-    email: string;
+    username: string
 
     @Field(() => String)
-    password: string;
+    email: string;
 
     @Field(() => Date)
     created_at: Date;
 
     @Field(() => Date)
     updated_at: Date;
+
+    @Field(() => UserProfile, {})
+    user_profile: UserProfile
 }

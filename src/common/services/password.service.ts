@@ -8,9 +8,7 @@ export class PasswordService {
     constructor(
         protected rndGen: RandomGeneratorService
     ) {
-        this.secret = process.env.ARGON_SECRET
-        console.log('SECRET', this.secret);
-        
+        this.secret = process.env.ARGON_SECRET        
     }
 
     async hash(password: string) {

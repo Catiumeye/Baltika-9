@@ -1,10 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { User } from "../user.entity";
+import { User } from "../../user.entity";
 
 
 
 @ObjectType()
 export class GetUserResultType {
     @Field(() => User)
-    user: User
+    user: User;
 }

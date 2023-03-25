@@ -1,5 +1,6 @@
 import { Args, ResolveField, Resolver } from "@nestjs/graphql";
-import { GetUserResultType } from "../results/get-user-result.type";
+import { GetUserInputType } from "../models/input/get-user-input.type";
+import { GetUserResultType } from "../models/results/get-user-result.type";
 import { UserService } from "../services/user.service";
 import { UserQueryType, UserRootResolver } from "./user-root.resolver";
 
@@ -11,9 +12,11 @@ export class UserQueryResolver extends UserRootResolver {
 
     @ResolveField(() => GetUserResultType, {})
     async getUser(
-        @Args('id') id: string,
+        @Args() input: GetUserInputType,
     ): Promise<GetUserResultType> {
-        return await this.userService.getUser() as any;
+        console.log('AA', input);
+        
+        return await this.userService.getUser(input);
     }
 
 }

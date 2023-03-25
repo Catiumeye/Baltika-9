@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { UserMutationResolver } from "./resolvers/user-mutation.resolver";
 import { UserQueryResolver } from "./resolvers/user-query.resolver";
 import { UserMutationType, UserRootResolver } from "./resolvers/user-root.resolver";
 import { UserService } from "./services/user.service";
@@ -9,8 +10,8 @@ import { UserService } from "./services/user.service";
     controllers: [],
     providers: [
         UserRootResolver,
+        UserMutationResolver,
         UserQueryResolver,
-        UserMutationType,
         UserService
     ],
     exports: []

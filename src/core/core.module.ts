@@ -6,9 +6,11 @@ import { UserModule } from "./user/user.module";
 @Module({
     imports: [
         UserModule,
+        UserProfileModule,
     ],
     exports: [
-        UserModule
+        UserModule,
+        UserProfileModule,
     ]
 })
 export class CoreModule {}

@@ -1,13 +1,19 @@
 import { Field, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
-import { CreateUserResultType } from '../results/create-user-result.type';
-import { GetUserResultType } from '../results/get-user-result.type';
+import { CreateUserResultType } from '../models/results/create-user-result.type';
+import { GetUserResultType } from '../models/results/get-user-result.type';
+import { User } from '../user.entity';
 
 @ObjectType()
 export class UserMutationType {
     @Field(() => CreateUserResultType, {
         description: 'Create User',
     })
-    createUserCollection: CreateUserResultType;
+    createUser: CreateUserResultType;
+
+    @Field(() => User, {
+        description: ''
+    })
+    deleteUser: User;
 }
 
 @ObjectType()
@@ -20,16 +26,12 @@ export class UserQueryType {
 
 @Resolver()
 export class UserRootResolver {
-    @Mutation(() => UserMutationType, {
-        description: 'User Collection mutations',
-    })
+    @Mutation(() => UserMutationType)
     userMutations() {
         return {};
     }
 
-    @Query(() => UserQueryType, {
-        description: 'User Collection queries',
-    })
+    @Query(() => UserQueryType)
     userQueries() {
         return {};
     }
