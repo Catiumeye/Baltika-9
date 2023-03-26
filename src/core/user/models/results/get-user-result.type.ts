@@ -5,6 +5,8 @@ import { User } from "../../user.entity";
 
 @ObjectType()
 export class GetUserResultType {
-    @Field(() => User)
-    user: User;
+    @Field(() => User, {
+        nullable: true
+    })
+    user?: User;
 }

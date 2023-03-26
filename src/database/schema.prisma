@@ -8,14 +8,14 @@ datasource db {
 }
 
 model User {
-  id         String         @id @default(uuid()) @db.Uuid
-  username   String         @unique @db.VarChar(30)
-  email      String         @db.VarChar
-  password   String         @db.VarChar
-  status     UserStatus     @default(PENDING)
-  role       UserRole       @default(USER)
-  created_at DateTime       @default(now()) @map("created_at")
-  updated_at DateTime       @updatedAt @map("updated_at")
+  id         String     @id @default(uuid()) @db.Uuid
+  username   String     @unique @db.VarChar(30)
+  email      String     @db.VarChar
+  password   String     @db.VarChar
+  status     UserStatus @default(PENDING)
+  role       UserRole   @default(USER)
+  created_at DateTime   @default(now()) @map("created_at")
+  updated_at DateTime   @updatedAt @map("updated_at")
 
   user_profile UserProfile?
   avatar       Avatar[]
@@ -25,23 +25,76 @@ model User {
 }
 
 enum UserRole {
-    USER
-    MODER
-    ADMIN
+  USER
+  MODER
+  ADMIN
 }
+
 enum UserStatus {
-    PENDING
-    ACTIVE
-    BLOCKED
+  PENDING
+  ACTIVE
+  BLOCKED
 }
 
 model UserProfile {
   id      String @id @default(uuid()) @db.Uuid
   user_id String @unique @db.Uuid
+  last_active DateTime @default(now())
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Topic        Topic[]
+  TopicMessage TopicMessage[]
 
   @@map("user_profile")
+}
+
+model Topic {
+  id          String      @id @default(uuid()) @db.Uuid
+  author_id   String      @db.Uuid
+  category_id String      @db.Uuid
+  status      TopicStatus
+  title       String
+  content     String
+  deleted     DateTime?   @map("deleted_at")
+
+  author   UserProfile    @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  category TopicCategory  @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  messages TopicMessage[]
+
+  @@map("topic")
+}
+
+enum TopicStatus {
+  VISIBLE
+  HIDDEN
+}
+
+model TopicCategory {
+  id     String              @id @default(uuid()) @db.Uuid
+  title  String              @unique @db.VarChar()
+  status TopicCategoryStatus @default(VISIBLE)
+
+  topics Topic[]
+
+  @@map("topic_category")
+}
+
+enum TopicCategoryStatus {
+  VISIBLE
+  HIDDEN
+}
+
+model TopicMessage {
+  id        String    @id @default(uuid()) @db.Uuid
+  topic_id  String    @db.Uuid
+  author_id String    @db.Uuid
+  message   String    @db.Uuid
+  deleted   DateTime? @map("deleted_at")
+
+  author UserProfile @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  topic  Topic       @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+
+  @@map("topic_message")
 }
 
 model File {
@@ -52,7 +105,7 @@ model File {
   user_id    String   @db.Uuid
   created_at DateTime @default(now()) @map("created_at")
 
-  user   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   avatars Avatar[]
 
   @@map("file")

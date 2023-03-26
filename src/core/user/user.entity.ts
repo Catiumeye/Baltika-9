@@ -19,6 +19,8 @@ export class User {
     @Field(() => Date)
     updated_at: Date;
 
-    @Field(() => UserProfile, {})
-    user_profile: UserProfile
+    @Field(() => UserProfile, {
+        nullable: true
+    })
+    userProfile?: UserProfile
 }

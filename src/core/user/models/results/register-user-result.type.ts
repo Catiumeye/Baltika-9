@@ -4,7 +4,7 @@ import { User } from "../../user.entity";
 
 
 @ObjectType()
-export class CreateUserResultType {
+export class RegisterUserResultType {
     @Field(() => Boolean)
     ok: boolean;
 }

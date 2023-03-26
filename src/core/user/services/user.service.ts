@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { PasswordService } from "common/services/password.service";
 import { PrismaService } from "common/services/prisma.service";
 import { GraphQLResolveInfo } from "graphql";
-import { CreateUserInputType } from "../models/input/create-user-input.type";
+import { RegisterUserInputType } from "../models/input/create-user-input.type";
 import { GetUserInputType } from "../models/input/get-user-input.type";
-import { CreateUserResultType } from "../models/results/create-user-result.type";
+import { RegisterUserResultType } from "../models/results/register-user-result.type";
 import { GetUserResultType } from "../models/results/get-user-result.type";
 import { fieldsMap } from 'graphql-fields-list';
 @Injectable()
@@ -26,19 +26,31 @@ export class UserService {
             },
             include: {
                 user_profile: true,
-                
+                avatar: {
+                    include: {
+                        file: true
+                    }
+                }
             }
         })
 
-        return {user: user as any}
+        return {user: user}
     }
 
-    async createUser(
-        input: CreateUserInputType
-    ): Promise<CreateUserResultType> {
+    async register(
+        input: RegisterUserInputType
+    ): Promise<RegisterUserResultType> {
         const hash = await this.passwordService.hash(input.password);
-        console.log('hash', hash);
+        const user = await this.prismaService.user.create({
+            data: {...input, password: hash}
+        })
         
         return {ok: true}
+    }
+
+    async verify(
+
+    ): Promise<void> {
+
     }
 }

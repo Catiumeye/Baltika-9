@@ -1,8 +1,8 @@
 import { UserService } from '../services/user.service';
-import { CreateUserResultType } from '../models/results/create-user-result.type';
+import { RegisterUserResultType } from '../models/results/register-user-result.type';
 import { Args, ResolveField, Resolver } from '@nestjs/graphql';
 import { UserMutationType, UserRootResolver } from './user-root.resolver';
-import { CreateUserInputType } from '../models/input/create-user-input.type';
+import { RegisterUserInputType } from '../models/input/create-user-input.type';
 
 @Resolver(UserMutationType)
 export class UserMutationResolver extends UserRootResolver {
@@ -10,13 +10,11 @@ export class UserMutationResolver extends UserRootResolver {
         super();
     }
 
-    @ResolveField(() => CreateUserResultType)
-    async createUser(
-        @Args() input: CreateUserInputType
-    ): Promise<CreateUserResultType> {
-        console.log(input);
-        
-        return await this.userService.createUser(input);
+    @ResolveField(() => RegisterUserResultType)
+    async register(
+        @Args() input: RegisterUserInputType
+    ): Promise<RegisterUserResultType> {
+        return await this.userService.register(input);
     }
 
     // @ResolveField(() => User)
