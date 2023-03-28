@@ -2,19 +2,29 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class RandomGeneratorService {
+    private readonly RandomLettersDigits = 'ABCDEFGHIJKLMNOPQRSTYVWXYZabcdefghijklmnopqrstyvwxyz0123456789';
+    private readonly UpperLettersDigits = 'ABCDEFGHIJKLMNOPQRSTYVWXYZ0123456789';
+    
     public genStr(length: number = 36): string {
-        const salt = 'abcdefghijklmnopqrstyvwxyz0123456789';
         let resultName: string = '';
     
         for (let i = 0; i < length; i++) {
-            const isUpper = !!Math.round(Math.random());
-            const randomI = Math.round(Math.random() * (salt.length - 1) + 0);
-            const randomSymbol = salt[randomI];
-            const isInt = Number.isInteger(randomSymbol);
+            const randomI = Math.round(Math.random() * (this.RandomLettersDigits.length - 1) + 0);
+            const randomSymbol = this.RandomLettersDigits[randomI];
             
-            resultName += isInt ?
-                randomSymbol :
-                isUpper ? randomSymbol.toUpperCase() : randomSymbol;
+            resultName += randomSymbol;
+        }
+        return resultName;
+    }
+
+    public genStrUpper(length: number = 36): string {
+        let resultName: string = '';
+    
+        for (let i = 0; i < length; i++) {
+            const randomI = Math.round(Math.random() * (this.UpperLettersDigits.length - 1) + 0);
+            const randomSymbol = this.UpperLettersDigits[randomI];
+            
+            resultName += randomSymbol;
         }
         return resultName;
     }

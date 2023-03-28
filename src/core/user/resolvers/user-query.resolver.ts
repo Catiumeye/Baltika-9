@@ -13,9 +13,7 @@ export class UserQueryResolver extends UserRootResolver {
     @ResolveField(() => GetUserResultType, {})
     async getUser(
         @Args() input: GetUserInputType,
-    ): Promise<GetUserResultType> {
-        console.log('AA', input);
-        
+    ): Promise<GetUserResultType> {        
         return await this.userService.getUser(input);
     }
 

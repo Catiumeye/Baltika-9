@@ -10,7 +10,7 @@ datasource db {
 model User {
   id         String     @id @default(uuid()) @db.Uuid
   username   String     @unique @db.VarChar(30)
-  email      String     @db.VarChar
+  email      String     @unique @db.VarChar
   password   String     @db.VarChar
   status     UserStatus @default(PENDING)
   role       UserRole   @default(USER)
@@ -20,6 +20,7 @@ model User {
   user_profile UserProfile?
   avatar       Avatar[]
   files        File[]
+  tokens    UserToken[]
 
   @@map("user")
 }
@@ -33,19 +34,30 @@ enum UserRole {
 enum UserStatus {
   PENDING
   ACTIVE
+  FROZEN
   BLOCKED
 }
 
 model UserProfile {
-  id      String @id @default(uuid()) @db.Uuid
-  user_id String @unique @db.Uuid
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String   @unique @db.Uuid
   last_active DateTime @default(now())
 
-  user         User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  Topic        Topic[]
-  TopicMessage TopicMessage[]
+  user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  topics         Topic[]
+  topic_messages TopicMessage[]
 
   @@map("user_profile")
+}
+
+model UserToken {
+  refresh_token String @id @db.VarChar
+  user_id       String @db.Uuid
+  expired_at    DateTime
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_token")
 }
 
 model Topic {
@@ -55,6 +67,7 @@ model Topic {
   status      TopicStatus
   title       String
   content     String
+  tags        String[]
   deleted     DateTime?   @map("deleted_at")
 
   author   UserProfile    @relation(fields: [author_id], references: [id], onDelete: Cascade)

@@ -13,7 +13,6 @@ export class PasswordService {
 
     async hash(password: string) {
         const saltStr = await this.rndGen.genStr();
-        console.log(this.secret);
         
         return argon2.hash(password, {
             secret: Buffer.from(this.secret),
