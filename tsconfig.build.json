@@ -1,4 +1,16 @@
 {
-  "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "apps/**/*.ts",
+        "libs/**/*.ts"
+    ],
+    "exclude": [
+        "apps/**/*.spec.ts",
+        "libs/**/*.spec.ts"
+    ]
 }

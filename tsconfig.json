@@ -1,21 +1,44 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
     "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "src",
-    "incremental": true,
+    "lib": [
+      "dom",
+      "esnext.asynciterable",
+      "es2015.iterable"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/.pnpm/@types+*"
+    ],
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "pretty": true,
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "allowJs": true,
+    "paths": {
+      "database/*": [
+        "database/*"
+      ],
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ]
+    }
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "apps/**/*.ts",
+        "libs/**/*.ts"
+    ]
 }
