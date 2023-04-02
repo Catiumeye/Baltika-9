@@ -15,6 +15,12 @@ async function bootstrap() {
             exceptionFactory,
         })
     );
+    app.setGlobalPrefix('graphql', {
+        exclude: [
+            'oauth/google',
+            'oauth/google/redirect',
+        ]
+    })
 
     const port = configService.get('APP_PORT', 8080);
     const host = configService.get('APP_HOST', '127.0.0.1');;

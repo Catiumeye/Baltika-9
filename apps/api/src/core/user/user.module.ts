@@ -14,7 +14,7 @@ import { UserService } from "./services/user.service";
         UserQueryResolver,
         UserService
     ],
-    exports: []
+    exports: [UserService]
 })
 export class UserModule {
 

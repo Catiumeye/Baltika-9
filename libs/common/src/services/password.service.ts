@@ -12,7 +12,7 @@ export class PasswordService {
         private readonly configService: ConfigService,
         protected rndGen: RandomGeneratorService,
     ) {
-        this.secret = configService.getOrThrow<string>('ARGON_SECRET');
+        this.secret = this.configService.getOrThrow<string>('ARGON_SECRET');
     }
 
     async hash(password: string) {

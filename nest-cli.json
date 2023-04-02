@@ -1,9 +1,6 @@
 {
     "compilerOptions": {
-      "assets": [
-          "../../../libs/**/*.proto",
-          "../../../apps/**/*.handlebars"
-      ],
+      "assets": [],
       "watchAssets": true,
       "webpack": true,
       "tsConfigPath": "apps/api/tsconfig.app.json",

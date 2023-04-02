@@ -7,9 +7,7 @@ import { RandomGeneratorService } from "./services/random-generator.service";
 
 @Global()
 @Module({
-    imports: [
-        ConfigModule
-    ],
+    imports: [],
     providers: [
         PrismaService,
         PasswordService,

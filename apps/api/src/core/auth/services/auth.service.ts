@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { isEmail } from "class-validator";
 import { PasswordService } from "@app/common/services/password.service";
@@ -9,6 +9,8 @@ import { LoginInputType } from "../models/input/login-input.type";
 import { RegisterUserInputType } from "../models/input/register-user-input.type";
 import { LoginResultType } from "../models/results/login-result.type";
 import { RegisterUserResultType } from "../models/results/register-user-result.type";
+import { UserService } from "../../user/services/user.service";
+import { StrategyConfigService } from "./strategy-config.service";
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,9 @@ export class AuthService {
         private readonly passwordService: PasswordService,
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
-        protected rndGen: RandomGeneratorService
+        // @Inject(forwardRef(() => UserService)) private userService: UserService,
+        private readonly strateguConfigService: StrategyConfigService,
+        protected rndGen: RandomGeneratorService,
     ) {}
 
     private async registerToken(uid: string): Promise<string> {
@@ -83,13 +87,17 @@ export class AuthService {
         if (!verified) return {code: 2, message: 'Invalid user data'};
 
         const access_token = await this.jwtService.signAsync({role: user.role}, {
-            expiresIn: '3d',
             subject: user.id,
-            noTimestamp: true
+            privateKey: this.strateguConfigService.config.JWT.accessToken.privateKey,
+            ...this.strateguConfigService.config.JWT.accessToken.signOptions
         });
         
         const refresh_token = await this.registerToken(user.id);
         
         return {access_token, refresh_token};
+    }
+
+    async authSocial() {
+        
     }
 }
