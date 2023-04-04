@@ -28,22 +28,11 @@ export class GoogleAuthService {
             client_id: this.clientID,
             redirect_uri: this.redirectURL,
             response_type: 'code',
-            scope: 'email profile',
+            scope: 'email+profile',
             include_granted_scopes: 'true',
             access_type: 'offline'
         })
         return `${this.endpointURL}?${aaa}`;
-        // const res = await axios.get(this.endpointURL, {
-        //     params: {
-        //         client_id: this.clientID,
-        //         redirect_uri: this.redirectURL,
-        //         response_type: 'code',
-        //         scope: 'email profile',
-        //         include_granted_scopes: 'true',
-        //         access_type: 'offline'
-        //     }
-        // })
-        // return res.data;
     }
 
     async getCreditionals(code: string) {

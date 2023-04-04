@@ -1,5 +1,5 @@
 import { ArgsType, Field, InputType} from "@nestjs/graphql";
-import { IsOptional, Validate, ValidateNested, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import { IsOptional, Validate, ValidateIf, ValidateNested, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { AuthType } from "@prisma/client";
 import { Transform, Type } from 'class-transformer'
 
@@ -27,7 +27,7 @@ class UsernameValidator implements ValidatorConstraintInterface {
 }
 
 @InputType()
-class UserData {
+class UserDataInput {
     @Validate(UsernameValidator)
     @Field(() => String, {
         description: 'Unique identifier'
@@ -59,11 +59,12 @@ export class RegisterSocialInput {
     auth_type: AuthType;
 
     @ValidateNested()
-    @Type(() => UserData)
-    @Field(() => UserData, {
+    @ValidateIf((obj: RegisterSocialInput, val) => !!obj.code)
+    @Type(() => UserDataInput)
+    @Field(() => UserDataInput, {
         nullable: true
     })
-    user_data: UserData;
+    user_data: UserDataInput;
 }
 
 

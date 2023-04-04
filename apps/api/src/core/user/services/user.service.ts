@@ -25,15 +25,21 @@ export class UserService {
                 username
             },
             include: {
-                user_profile: true,
-                avatar: {
+                profile: true,
+                avatars: {
                     include: {
                         file: true
                     }
-                }
+                },
+                files: true,
+                auth: true
             }
         })
 
         return {user: user}
+    }
+
+    async createUser() {
+        this.prismaService
     }
 }
