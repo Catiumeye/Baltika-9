@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { isEmail } from "class-validator";
 import { PasswordService } from "@app/common/services/password.service";
@@ -11,6 +11,10 @@ import { LoginResultType } from "../models/results/login-result.type";
 import { RegisterUserResultType } from "../models/results/register-user-result.type";
 import { UserService } from "../../user/services/user.service";
 import { StrategyConfigService } from "./strategy-config.service";
+import { GoogleAuthService } from "./google-auth.service";
+import { RegisterSocialResult } from "../models/results/register-social-result.type";
+import { AuthType } from "@prisma/client";
+import { RegisterSocialInput } from "../models/input/register-social-input.type";
 
 @Injectable()
 export class AuthService {
@@ -18,22 +22,22 @@ export class AuthService {
         private readonly passwordService: PasswordService,
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
-        // @Inject(forwardRef(() => UserService)) private userService: UserService,
-        private readonly strateguConfigService: StrategyConfigService,
+        private readonly strategyConfigService: StrategyConfigService,
+        private readonly googleAuthService: GoogleAuthService,
         protected rndGen: RandomGeneratorService,
     ) {}
 
-    private async registerToken(uid: string): Promise<string> {
-        const refresh_token = this.rndGen.genStrUpper(64);
-        const userToken = await this.prismaService.userToken.create({
-            data: {
-                refresh_token,
-                user_id: uid,
-                expired_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60)
-            }
-        });
-        return userToken.refresh_token;
-    }
+    // private async registerToken(uid: string): Promise<string> {
+    //     const refresh_token = this.rndGen.genStrUpper(64);
+    //     const userToken = await this.prismaService.userToken.create({
+    //         data: {
+    //             refresh_token,
+    //             user_id: uid,
+    //             expired_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60)
+    //         }
+    //     });
+    //     return userToken.refresh_token;
+    // }
 
     async register(
         input: RegisterUserInputType
@@ -88,16 +92,45 @@ export class AuthService {
 
         const access_token = await this.jwtService.signAsync({role: user.role}, {
             subject: user.id,
-            privateKey: this.strateguConfigService.config.JWT.accessToken.privateKey,
-            ...this.strateguConfigService.config.JWT.accessToken.signOptions
+            privateKey: this.strategyConfigService.config.JWT.accessToken.privateKey,
+            ...this.strategyConfigService.config.JWT.accessToken.signOptions
         });
         
-        const refresh_token = await this.registerToken(user.id);
-        
-        return {access_token, refresh_token};
+        return {access_token, refresh_token: ''};
     }
 
-    async authSocial() {
+    async registerSocial(input: RegisterSocialInput): Promise<RegisterSocialResult> {        
+        if (!input.code) {
+            const location = await this.googleAuthService.receiveCode();
+            return { location };
+        }
         
+        const {token_type, access_token} = await this.googleAuthService.getCreditionals(input.code);
+        
+        const userData = await this.googleAuthService.getUserInfo(token_type, access_token)
+        console.log('userData', userData);
+        const coincidence = await this.prismaService.user.findFirst({
+            where: {
+                OR: [
+                    {
+                        username: {
+                            equals: input.user_data.username,
+                            mode: 'insensitive'
+                        }
+                    },
+                    {
+                        email: {
+                            equals: userData.email,
+                            mode: 'insensitive'
+                        }
+                    }
+                ]
+            }
+        })
+        if(coincidence) {
+            return {code: 3, message: 'Same user already exists'}
+        }
+
+        return { access_token: '', location: '' };
     }
 }

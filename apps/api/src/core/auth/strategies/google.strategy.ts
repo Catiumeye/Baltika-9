@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
+import { AuthType } from "@prisma/client";
 import { Profile, Strategy, StrategyOptions, VerifyCallback } from "passport-google-oauth20";
-import { AuthType, StrategyConfigService } from "../services/strategy-config.service";
+import { StrategyConfigService } from "../services/strategy-config.service";
 
 
 

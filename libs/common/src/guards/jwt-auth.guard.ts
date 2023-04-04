@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } 
 import { ConfigService } from "@nestjs/config";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
-import { AuthType } from "apps/api/src/core/auth/services/strategy-config.service";
+import { AuthType } from "@prisma/client";
 import * as jwt from 'jsonwebtoken';
 
 

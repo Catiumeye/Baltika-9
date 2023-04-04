@@ -7,6 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Auth {
+  type        AuthType
+  user_id     String   @id @db.Uuid
+  auth_type   AuthType
+  external_id String   @db.VarChar
+
+  user     User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  sessions AuthSession[]
+
+  @@map("auth")
+}
+
+enum AuthType {
+  JWT
+  GOOGLE
+}
+
+model AuthSession {
+  id            String   @id @default(uuid())
+  user_agent    String   @db.VarChar
+  ip            String   @db.Inet
+  auth_id       String   @db.Uuid
+  expired_at    DateTime
+  refresh_token String   @unique @db.VarChar
+
+  auth Auth @relation(fields: [auth_id], references: [user_id], onDelete: Cascade)
+
+  @@index([refresh_token])
+  @@map("auth_session")
+}
+
 model User {
   id         String     @id @default(uuid()) @db.Uuid
   username   String     @unique @db.VarChar(30)
@@ -14,13 +45,13 @@ model User {
   password   String     @db.VarChar
   status     UserStatus @default(PENDING)
   role       UserRole   @default(USER)
-  created_at DateTime   @default(now()) @map("created_at")
-  updated_at DateTime   @updatedAt @map("updated_at")
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
 
+  user_auth    Auth?
   user_profile UserProfile?
   avatar       Avatar[]
   files        File[]
-  tokens    UserToken[]
 
   @@map("user")
 }
@@ -48,16 +79,6 @@ model UserProfile {
   topic_messages TopicMessage[]
 
   @@map("user_profile")
-}
-
-model UserToken {
-  refresh_token String @id @db.VarChar
-  user_id       String @db.Uuid
-  expired_at    DateTime
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("user_token")
 }
 
 model Topic {

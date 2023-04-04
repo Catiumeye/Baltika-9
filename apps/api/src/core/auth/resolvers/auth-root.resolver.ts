@@ -1,5 +1,6 @@
 import { Field, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { LoginResultType } from '../models/results/login-result.type';
+import { RegisterSocialResult } from '../models/results/register-social-result.type';
 import { RegisterUserResultType } from '../models/results/register-user-result.type';
 
 
@@ -9,6 +10,11 @@ export class AuthMutationType {
         description: 'Register User',
     })
     register: RegisterUserResultType;
+
+    @Field(() => RegisterSocialResult, {
+        description: 'Register User By Social',
+    })
+    registerSocial: RegisterSocialResult;
 }
 
 @ObjectType()

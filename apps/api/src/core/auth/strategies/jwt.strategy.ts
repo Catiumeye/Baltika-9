@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy, StrategyOptions, VerifiedCallback } from "passport-jwt";
-import { AuthType, StrategyConfigService } from "../services/strategy-config.service";
+import { StrategyConfigService } from "../services/strategy-config.service";
 import { JwtPayload } from 'jsonwebtoken';
+import { AuthType } from "@prisma/client";
 
 
 @Injectable()

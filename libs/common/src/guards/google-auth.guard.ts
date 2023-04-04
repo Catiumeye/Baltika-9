@@ -1,6 +1,6 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import { AuthGuard, IAuthGuard } from "@nestjs/passport";
-import { AuthType } from "apps/api/src/core/auth/services/strategy-config.service";
+import { AuthType } from "@prisma/client";
 
 
 @Injectable()

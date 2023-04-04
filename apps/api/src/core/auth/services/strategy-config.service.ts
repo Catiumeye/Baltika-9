@@ -1,14 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { registerEnumType } from "@nestjs/graphql";
 import { JwtModuleOptions, JwtOptionsFactory } from "@nestjs/jwt";
-export enum AuthType {
-    JWT = 'JWT',
-    // DISCORD = 'DISCORD',
-    GOOGLE = 'GOOGLE',
-    // APPLE = 'APPLE',
-    // FACEBOOK = 'FACEBOOK',
-    // TWITTER = 'TWITTER'
-}
+import { AuthType } from "@prisma/client";
+// export enum AuthType {
+//     JWT = 'JWT',
+//     // DISCORD = 'DISCORD',
+//     GOOGLE = 'GOOGLE',
+//     // APPLE = 'APPLE',
+//     // FACEBOOK = 'FACEBOOK',
+//     // TWITTER = 'TWITTER'
+// }
+registerEnumType(AuthType, {
+    name: 'AuthType'
+})
 
 @Injectable()
 export class StrategyConfigService implements JwtOptionsFactory {
@@ -30,8 +35,8 @@ export class StrategyConfigService implements JwtOptionsFactory {
             GOOGLE: {
                 clientID: this.configService.getOrThrow('GOOGLE_CLIENT_ID'),
                 clientSecret: this.configService.getOrThrow('GOOGLE_CLIENT_SECRET'),
-                callbackURL: this.configService.getOrThrow('GOOGLE_CALLBACK_URL'),
-                redirectURL: this.configService.getOrThrow('GOOGLE_ENDPOINT'),
+                redirectURL: this.configService.getOrThrow('GOOGLE_REDIRECT_URL'),
+                endpointURL: this.configService.getOrThrow('GOOGLE_ENDPOINT'),
             },
         }
     }

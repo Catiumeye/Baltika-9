@@ -9,7 +9,9 @@ export const exceptionFactory = (errors: ValidationError[]) => {
             extensions: {
                 code: 2,
                 details: errors.map(err => {
-                    return {field: err.property, constraints: Object.values(err.constraints || {})}
+                    return {field: err.property, errors: err.children?.map(e => {
+                        return Object.values(e.constraints || {});
+                    })}
                 })
             },
         }

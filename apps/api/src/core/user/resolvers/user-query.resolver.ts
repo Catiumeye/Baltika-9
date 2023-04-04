@@ -2,7 +2,7 @@ import { JwtAuthGuard } from "@app/common/guards/jwt-auth.guard";
 import { ExecutionContext, UseGuards } from "@nestjs/common";
 import { Args, Context, GraphQLExecutionContext, ResolveField, Resolver } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
-import { AuthType } from "../../auth/services/strategy-config.service";
+import { AuthType } from "@prisma/client";
 import { GetUserInputType } from "../models/input/get-user-input.type";
 import { GetUserResultType } from "../models/results/get-user-result.type";
 import { UserService } from "../services/user.service";

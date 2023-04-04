@@ -19,6 +19,8 @@ async function bootstrap() {
         exclude: [
             'oauth/google',
             'oauth/google/redirect',
+            'oauth/vk',
+            'oauth/vk/redirect',
         ]
     })
 
