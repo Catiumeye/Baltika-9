@@ -1,10 +1,10 @@
+import { BaseResultType } from "@app/common/models/result/base-result.type";
 import { Field, ObjectType } from "@nestjs/graphql";
-import { BaseResultType } from "@app/common//models/result/base-result.type";
 
 
 
 @ObjectType()
-export class LoginResultType extends BaseResultType {
+export class LoginSocialResult extends BaseResultType {
     @Field(() => String, {
         nullable: true
     })
@@ -14,9 +14,4 @@ export class LoginResultType extends BaseResultType {
         nullable: true
     })
     refresh_token?: string;
-
-    @Field(() => String, {
-        nullable: true
-    })
-    location?: string;
 }

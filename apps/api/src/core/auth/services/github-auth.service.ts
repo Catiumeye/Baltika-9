@@ -56,7 +56,7 @@ interface IGithubGetUserInfo {
         private_repos: number;
     }
 }
-
+//avatar https://avatars.githubusercontent.com/u/39646790
 
 @Injectable()
 export class GitHubAuthService extends BaseAuthService<'GITHUB'> {

@@ -13,11 +13,12 @@ import { UserService } from "../../user/services/user.service";
 import { StrategyConfigService } from "./strategy-config.service";
 import { GoogleAuthService } from "./google-auth.service";
 import { RegisterSocialResult } from "../models/results/register-social-result.type";
-import { AuthType } from "@prisma/client";
+import { AuthType, UserStatus } from "@prisma/client";
 import { RegisterSocialInput } from "../models/input/register-social-input.type";
 import { TokenService } from "./token.service";
 import { GitHubAuthService } from "./github-auth.service";
 import { AuthProviderService } from "./auth-provider.service";
+import { LoginSocialInput } from "../models/input/login-social-input.type";
 
 @Injectable()
 export class AuthService {
@@ -91,6 +92,39 @@ export class AuthService {
         return {access_token, refresh_token: ''};
     }
 
+    async loginSocial(
+        input: LoginSocialInput
+    ): Promise<LoginResultType> {
+        const socAuthService = this.authProviderService.determineSocial(input.auth_type);
+        
+        if (!input.code) {
+            const location = await socAuthService.receiveCode();
+            return { location };
+        }
+
+        const { token_type, access_token } = await socAuthService.getCreditionals(input.code);
+        const userData = await socAuthService.getUserInfo(token_type, access_token);
+
+        const user = await this.prismaService.user.findFirst({
+            where: {
+                email: userData.email,
+                auth: {
+                    external_id: userData.external_id,
+                    type: input.auth_type
+                }
+            },
+            include: {
+                auth: true
+            }
+        })
+        
+        if (!user) return { code: 2, message: 'incorrect data' };
+
+        const tokens = await this.tokenService.createAuthTokens(user, input.auth_type);
+
+        return {access_token: tokens.access_token, refresh_token: tokens.refresh_token};
+    }
+
     async registerSocial(input: RegisterSocialInput): Promise<RegisterSocialResult> {        
         const socAuthService = this.authProviderService.determineSocial(input.auth_type);
         if (!input.code) {
@@ -130,6 +164,7 @@ export class AuthService {
                 username: input.user_data.username,
                 email: userData.email,
                 avatars,
+                status: UserStatus.ACTIVE,
                 auth: {
                     create: {
                         type: input.auth_type,
@@ -149,7 +184,7 @@ export class AuthService {
             }
         })
 
-        const tokens = await this.tokenService.createAuthTokens(user, input.auth_type)
+        const tokens = await this.tokenService.createAuthTokens(user, input.auth_type);
 
         return { access_token: tokens.access_token, refresh_token: tokens.refresh_token };
     }

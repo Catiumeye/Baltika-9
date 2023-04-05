@@ -10,11 +10,4 @@ export class AuthQueryResolver extends AuthRootResolver {
         super();
     }
 
-
-    @ResolveField(() => LoginResultType)
-    async login(
-        @Args() input: LoginInputType
-    ) {
-        return await this.authService.login(input);
-    }
 }

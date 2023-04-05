@@ -1,7 +1,7 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Global, Module } from '@nestjs/common';
+import {  Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { GraphQLExecutionContext, GraphQLModule } from '@nestjs/graphql';
+import { GraphQLModule } from '@nestjs/graphql';
 import { CommonModule } from '@app/common/common.module';
 import { CoreModule } from './core/core.module';
 

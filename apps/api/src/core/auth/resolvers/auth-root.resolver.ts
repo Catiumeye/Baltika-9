@@ -15,12 +15,19 @@ export class AuthMutationType {
         description: 'Register User By Social',
     })
     registerSocial: RegisterSocialResult;
+
+    // @Field(() => LoginResultType)
+    // login: LoginResultType;
+
+    @Field(() => LoginResultType)
+    loginSocial: LoginResultType;
+
 }
 
 @ObjectType()
 export class AuthQueryType {
-    @Field(() => LoginResultType)
-    login: LoginResultType
+    @Field(() => String)
+    valera: string;
 }
 
 @Resolver()

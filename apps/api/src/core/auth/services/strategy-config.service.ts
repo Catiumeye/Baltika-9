@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { registerEnumType } from "@nestjs/graphql";
 import { JwtModuleOptions, JwtOptionsFactory } from "@nestjs/jwt";
 import { AuthType } from "@prisma/client";
 
