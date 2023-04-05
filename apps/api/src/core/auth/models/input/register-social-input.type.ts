@@ -56,7 +56,7 @@ export class RegisterSocialInput {
     @Field(() => AuthType, {
         description: 'Acceptable all except JWT'
     })
-    auth_type: AuthType;
+    auth_type: Exclude<keyof typeof AuthType, 'JWT'>;
 
     @ValidateNested()
     @ValidateIf((obj: RegisterSocialInput, val) => !!obj.code)

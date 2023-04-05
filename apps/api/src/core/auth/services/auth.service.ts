@@ -16,6 +16,8 @@ import { RegisterSocialResult } from "../models/results/register-social-result.t
 import { AuthType } from "@prisma/client";
 import { RegisterSocialInput } from "../models/input/register-social-input.type";
 import { TokenService } from "./token.service";
+import { GitHubAuthService } from "./github-auth.service";
+import { AuthProviderService } from "./auth-provider.service";
 
 @Injectable()
 export class AuthService {
@@ -24,8 +26,8 @@ export class AuthService {
         private readonly prismaService: PrismaService,
         private readonly jwtService: JwtService,
         private readonly strategyConfigService: StrategyConfigService,
-        private readonly googleAuthService: GoogleAuthService,
         private readonly tokenService: TokenService,
+        private readonly authProviderService: AuthProviderService,
         protected rndGen: RandomGeneratorService,
     ) {}
 
@@ -90,15 +92,15 @@ export class AuthService {
     }
 
     async registerSocial(input: RegisterSocialInput): Promise<RegisterSocialResult> {        
+        const socAuthService = this.authProviderService.determineSocial(input.auth_type);
         if (!input.code) {
-            const location = await this.googleAuthService.receiveCode();
+            const location = await socAuthService.receiveCode();
             return { location };
         }
         
-        const {token_type, access_token} = await this.googleAuthService.getCreditionals(input.code);
-        
-        const userData = await this.googleAuthService.getUserInfo(token_type, access_token)
-        console.log('userData', userData);
+        const { token_type, access_token } = await socAuthService.getCreditionals(input.code);
+        const userData = await socAuthService.getUserInfo(token_type, access_token);
+
         const coincidence = await this.prismaService.user.findFirst({
             where: {
                 OR: [
@@ -122,7 +124,7 @@ export class AuthService {
             return {code: 3, message: 'Same user already exists'}
         }
 
-        const avatars = input.user_data.include_avatar ? {create: {url: userData.picture}} : undefined;
+        const avatars = input.user_data.include_avatar ? {create: {url: userData.avatar}} : undefined;
         const user = await this.prismaService.user.create({
             data: {
                 username: input.user_data.username,
@@ -131,7 +133,7 @@ export class AuthService {
                 auth: {
                     create: {
                         type: input.auth_type,
-                        external_id: userData.sub,
+                        external_id: userData.external_id,
                     }
                 },
                 profile: {

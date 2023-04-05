@@ -50,8 +50,8 @@ model User {
 
   auth    Auth?
   profile UserProfile?
-  avatars       Avatar[]
-  files        File[]
+  avatars Avatar[]
+  files   File[]
 
   @@map("user")
 }
@@ -72,6 +72,7 @@ enum UserStatus {
 model UserProfile {
   id          String   @id @default(uuid()) @db.Uuid
   user_id     String   @unique @db.Uuid
+  bio         String?  @db.VarChar
   last_active DateTime @default(now())
 
   user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -148,10 +149,10 @@ model File {
 model Avatar {
   id      String  @id @default(uuid()) @db.Uuid
   user_id String  @db.Uuid
-  file_id String?  @db.Uuid
+  file_id String? @db.Uuid
   url     String? @db.VarChar
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   file File? @relation(fields: [file_id], references: [id], onDelete: Cascade)
 
   @@map("avatar")

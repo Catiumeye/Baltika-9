@@ -1,5 +1,4 @@
-import { JwtAuthGuard } from "@app/common/guards/jwt-auth.guard";
-import { UseGuards } from "@nestjs/common";
+
 import { Args, ResolveField, Resolver } from "@nestjs/graphql";
 import { GetUserInputType } from "../models/input/get-user-input.type";
 import { GetUserResultType } from "../models/results/get-user-result.type";
@@ -13,7 +12,6 @@ export class UserQueryResolver extends UserRootResolver {
         super();
     }
 
-    @UseGuards(JwtAuthGuard)
     @ResolveField(() => GetUserResultType, {
         middleware: [AuthMiddleware]
     })
