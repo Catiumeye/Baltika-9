@@ -30,5 +30,5 @@ export class Topic {
     category?: TopicCategory;
 
     @Field(() => [TopicComment])
-    messages?: TopicComment[];
+    comments?: TopicComment[];
 }

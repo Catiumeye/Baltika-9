@@ -7,12 +7,56 @@ import { CreateTopicCategoryResultType } from "../models/results/create-topic-ca
 import { CreateTopicResultType } from "../models/results/create-topic-result.type";
 import { CreateTopicCommentInput } from "../models/input/create-topic-comment-input.type";
 import { CreateTopicCommentResult } from "../models/results/create-topic-comment-result.type";
+import { GetTopicResult } from "../models/results/get-topic-result.type";
 
 @Injectable()
 export class TopicService {
     constructor(
         private readonly prismaService: PrismaService,
     ) {}
+
+    async getTopic(
+        id: string
+    ): Promise<GetTopicResult> {
+        const topic = await this.prismaService.topic.findUnique({
+            where: { id },
+            include: {
+                author: true,
+                category: true,
+                comments: {
+                    where: {
+                        parent_id: null
+                    },
+                    include: {
+                        children: {
+                            select: {
+                                id: true,
+                                message: true,
+                                author: {
+                                    select: {
+                                        user: {
+                                            select: {
+                                                username: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        author: {
+                            select: {
+                                user: {
+                                    select: { username: true }
+                                }
+                            }
+                        }
+                    },
+                }
+            }
+        })
+        
+        return {topic}
+    }
 
     async createTopicCategory(
         input: CreateTopicCategoryInputType

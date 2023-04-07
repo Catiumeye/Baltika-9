@@ -1,4 +1,5 @@
-import { Args, Int, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, ID, Int, ResolveField, Resolver } from "@nestjs/graphql";
+import { GetTopicResult } from "../models/results/get-topic-result.type";
 import { TopicService } from "../services/topic.service";
 import { TopicQueryType, TopicRootResolver } from "./topic-root.resolver";
 
@@ -9,11 +10,11 @@ export class TopicQueryResolver extends TopicRootResolver {
     }
 
     @ResolveField(() => Int, {})
-    async getUser(
-
-    ): Promise<any> {
+    async getTopic(
+        @Args('id', {type: () => ID}) id: string
+    ): Promise<GetTopicResult> {
         
-        return await this.topicService;
+        return await this.topicService.getTopic(id);
     }
 
 }

@@ -14,13 +14,17 @@ export class TopicComment {
     @Field(() => ID)
     author_id: string;
 
-    @Field(() => ID)
+    @Field(() => ID, {
+        nullable: true
+    })
     parent_id?: string | null;
 
     @Field(() => String)
     message: string;
     
-    @Field(() => UserProfile)
+    @Field(() => UserProfile, {
+        nullable: true
+    })
     author?: UserProfile;
 
     @Field(() => Topic)
