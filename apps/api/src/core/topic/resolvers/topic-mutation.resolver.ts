@@ -5,6 +5,8 @@ import { CreateTopicCategoryInputType } from '../models/input/create-topic-categ
 import { CreateTopicCategoryResultType } from '../models/results/create-topic-category-result.type';
 import { CreateTopicResultType } from '../models/results/create-topic-result.type';
 import { CreateTopicInputType } from '../models/input/create-topic-input.type';
+import { CreateTopicCommentResult } from '../models/results/create-topic-comment-result.type';
+import { CreateTopicCommentInput } from '../models/input/create-topic-comment-input.type';
 
 @Resolver(TopicMutationType)
 export class TopicMutationResolver extends TopicRootResolver {
@@ -23,6 +25,15 @@ export class TopicMutationResolver extends TopicRootResolver {
     async createTopic(
         @Args() input: CreateTopicInputType
     ): Promise<CreateTopicResultType> {
+        console.log('sss',input);
+        
         return await this.topicService.createTopic(input);
+    }
+
+    @ResolveField(() => CreateTopicCommentResult)
+    async createTopicComment(
+        @Args() input: CreateTopicCommentInput
+    ): Promise<CreateTopicCommentResult> {
+        return await this.topicService.createTopicComment(input);
     }
 }

@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { TopicStatus } from "@prisma/client";
 import { UserProfile } from "../user-profile/user-profile.entity";
 import { TopicCategory } from "./topic-category.entity";
+import { TopicComment } from "./topic-comment.entity";
 
 registerEnumType(TopicStatus, {
     name: 'TopicStatus'
@@ -14,20 +15,20 @@ export class Topic {
     id: string;
 
     @Field(() => TopicStatus)
-    status: TopicStatus
+    status: TopicStatus;
     
     @Field(() => UserProfile)
-    author: UserProfile
+    author?: UserProfile;
     
     @Field(() => String)
-    title: string
+    title: string;
     
     @Field(() => String)
-    content: string
+    content?: string;
 
     @Field(() => TopicCategory)
-    category: TopicCategory
+    category?: TopicCategory;
 
-    @Field(() => [TopicCategory])
-    messages: TopicCategory[]
+    @Field(() => [TopicComment])
+    messages?: TopicComment[];
 }

@@ -19,7 +19,7 @@ export class CreateTopicInputType {
     @Field(() => ID)
     author_id: string;
 
-    @Length(10, 120)
+    @Length(2, 120)
     @Field(() => String, {
         description: 'Title from 10 to 120 chars'
     })

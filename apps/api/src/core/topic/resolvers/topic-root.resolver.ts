@@ -1,5 +1,6 @@
 import { Field, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { CreateTopicCategoryResultType } from '../models/results/create-topic-category-result.type';
+import { CreateTopicCommentResult } from '../models/results/create-topic-comment-result.type';
 import { CreateTopicResultType } from '../models/results/create-topic-result.type';
 
 
@@ -10,6 +11,9 @@ export class TopicMutationType {
 
     @Field(() => CreateTopicResultType)
     createTopic: CreateTopicResultType;
+
+    @Field(() => CreateTopicCommentResult)
+    createTopicComment: CreateTopicResultType;
 }
 
 @ObjectType()

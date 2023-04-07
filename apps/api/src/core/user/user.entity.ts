@@ -46,7 +46,7 @@ export class User {
     @Field(() => Auth, {
         nullable: true
     })
-    auth: Auth | null;
+    auth?: Auth | null;
 
     @Field(() => UserProfile, {
         nullable: true
