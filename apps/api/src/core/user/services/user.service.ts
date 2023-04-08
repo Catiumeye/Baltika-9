@@ -7,10 +7,13 @@ import { GetUserInputType } from "../models/input/get-user-input.type";
 import { RegisterUserResultType } from "../../auth/models/results/register-user-result.type";
 import { GetUserResultType } from "../models/results/get-user-result.type";
 import { fieldsMap } from 'graphql-fields-list';
+import { GetUsersInput } from "../models/input/get-users-input.type";
+import { PaginationInput } from "@app/common/models/input/pagination-input.type";
+import { GetUsersResult } from "../models/results/get-users-result.type";
+import { paginationUtil } from "@app/common/utils/pagination-util";
 @Injectable()
 export class UserService {
     constructor(
-        private readonly passwordService: PasswordService,
         private readonly prismaService: PrismaService,
     ) {}
 
@@ -39,7 +42,15 @@ export class UserService {
         return {user: user}
     }
 
-    async createUser() {
-        this.prismaService
+    async getUsers(
+        input: GetUsersInput,
+        pagination: PaginationInput
+    ): Promise<GetUsersResult> {
+        const users = await this.prismaService.user.findMany({
+            where: input,
+            ...paginationUtil(pagination)
+        })
+        
+        return { users };
     }
 }

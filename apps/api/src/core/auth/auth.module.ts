@@ -30,9 +30,11 @@ import { TokenService } from "./services/token.service";
         StrategyConfigService,
         GoogleAuthService,
         GitHubAuthService,
-
     ],
-    exports: []
+    exports: [
+        JwtModule,
+        StrategyConfigService
+    ]
 })
 export class AuthModule {
 

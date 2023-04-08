@@ -1,6 +1,7 @@
 import { Field, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { RegisterUserResultType } from '../../auth/models/results/register-user-result.type';
 import { GetUserResultType } from '../models/results/get-user-result.type';
+import { GetUsersResult } from '../models/results/get-users-result.type';
 import { User } from '../user.entity';
 
 @ObjectType()
@@ -17,6 +18,11 @@ export class UserQueryType {
         description: 'Get User',
     })
     getUser: GetUserResultType;
+
+    @Field(() => GetUsersResult, {
+        description: 'Get Users'
+    })
+    getUsers: GetUsersResult
 }
 
 @Resolver()

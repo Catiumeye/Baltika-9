@@ -34,11 +34,7 @@ export class TokenService {
     }
 
     async createAuthTokens(user: User, authType: AuthType): Promise<{access_token: string; refresh_token: string}> {
-        const access_token = await this.jwtService.signAsync({role: user.role}, {
-            subject: user.id,
-            privateKey: this.strategyConfigService.config.JWT.accessToken.privateKey,
-            ...this.strategyConfigService.config.JWT.accessToken.signOptions
-        });
+        const access_token = await this.jwtService.signAsync({role: user.role, sub: user.id});
 
         const refresh_token = await this.registerToken(user.id);
         

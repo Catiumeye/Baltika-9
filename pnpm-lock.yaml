@@ -11,7 +11,6 @@ specifiers:
   '@nestjs/graphql': ^11.0.4
   '@nestjs/jwt': ^10.0.2
   '@nestjs/mapped-types': ^1.2.2
-  '@nestjs/passport': ^9.0.3
   '@nestjs/platform-express': ^9.0.0
   '@nestjs/schematics': ^9.0.0
   '@nestjs/testing': ^9.0.0
@@ -19,8 +18,6 @@ specifiers:
   '@types/express': ^4.17.13
   '@types/jest': 29.2.4
   '@types/node': 18.11.18
-  '@types/passport-google-oauth20': ^2.0.11
-  '@types/passport-jwt': ^3.0.8
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
@@ -61,11 +58,8 @@ dependencies:
   '@nestjs/graphql': 11.0.4_2e406a03187665253a91dbc4ce11bc83
   '@nestjs/jwt': 10.0.2_@nestjs+common@9.3.9
   '@nestjs/mapped-types': 1.2.2_933b2479c2c9775104abf401affa7efb
-  '@nestjs/passport': 9.0.3_@nestjs+common@9.3.9
   '@nestjs/platform-express': 9.3.9_ffcae472daf98f8e7f149b1b9afd514e
   '@prisma/client': 4.10.1_prisma@4.10.1
-  '@types/passport-google-oauth20': 2.0.11
-  '@types/passport-jwt': 3.0.8
   argon2: 0.30.3
   axios: 1.3.4
   class-transformer: 0.5.1
@@ -1379,15 +1373,6 @@ packages:
       reflect-metadata: 0.1.13
     dev: false
 
-  /@nestjs/passport/9.0.3_@nestjs+common@9.3.9:
-    resolution: {integrity: sha512-HplSJaimEAz1IOZEu+pdJHHJhQyBOPAYWXYHfAPQvRqWtw4FJF1VXl1Qtk9dcXQX1eKytDtH+qBzNQc19GWNEg==}
-    peerDependencies:
-      '@nestjs/common': ^8.0.0 || ^9.0.0
-      passport: ^0.4.0 || ^0.5.0 || ^0.6.0
-    dependencies:
-      '@nestjs/common': 9.3.9_b11626e1d3e8723ed81a03aa155de8e2
-    dev: false
-
   /@nestjs/platform-express/9.3.9_ffcae472daf98f8e7f149b1b9afd514e:
     resolution: {integrity: sha512-f8ja2sYuDGj2QSMmjg05n3WF19wJG5yTiYxRi64nsu5GKL0qLM1LzxNemehkni/knExlvF2bDpbKKpna9nC1JA==}
     peerDependencies:
@@ -1718,52 +1703,9 @@ packages:
   /@types/node/18.11.18:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
 
-  /@types/oauth/0.9.1:
-    resolution: {integrity: sha512-a1iY62/a3yhZ7qH7cNUsxoI3U/0Fe9+RnuFrpTKr+0WVOzbKlSLojShCKe20aOD1Sppv+i8Zlq0pLDuTJnwS4A==}
-    dependencies:
-      '@types/node': 18.11.18
-    dev: false
-
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: true
-
-  /@types/passport-google-oauth20/2.0.11:
-    resolution: {integrity: sha512-9XMT1GfwhZL7UQEiCepLef55RNPHkbrCtsU7rsWPTEOsmu5qVIW8nSemtB4p+P24CuOhA+IKkv8LsPThYghGww==}
-    dependencies:
-      '@types/express': 4.17.17
-      '@types/passport': 1.0.12
-      '@types/passport-oauth2': 1.4.12
-    dev: false
-
-  /@types/passport-jwt/3.0.8:
-    resolution: {integrity: sha512-VKJZDJUAHFhPHHYvxdqFcc5vlDht8Q2pL1/ePvKAgqRThDaCc84lSYOTQmnx3+JIkDlN+2KfhFhXIzlcVT+Pcw==}
-    dependencies:
-      '@types/express': 4.17.17
-      '@types/jsonwebtoken': 9.0.1
-      '@types/passport-strategy': 0.2.35
-    dev: false
-
-  /@types/passport-oauth2/1.4.12:
-    resolution: {integrity: sha512-RZg6cYTyEGinrZn/7REYQds6zrTxoBorX1/fdaz5UHzkG8xdFE7QQxkJagCr2ETzGII58FAFDmnmbTUVMrltNA==}
-    dependencies:
-      '@types/express': 4.17.17
-      '@types/oauth': 0.9.1
-      '@types/passport': 1.0.12
-    dev: false
-
-  /@types/passport-strategy/0.2.35:
-    resolution: {integrity: sha512-o5D19Jy2XPFoX2rKApykY15et3Apgax00RRLf0RUotPDUsYrQa7x4howLYr9El2mlUApHmCMv5CZ1IXqKFQ2+g==}
-    dependencies:
-      '@types/express': 4.17.17
-      '@types/passport': 1.0.12
-    dev: false
-
-  /@types/passport/1.0.12:
-    resolution: {integrity: sha512-QFdJ2TiAEoXfEQSNDISJR1Tm51I78CymqcBa8imbjo6dNNu+l2huDxxbDEIoFIwOSKMkOfHEikyDuZ38WwWsmw==}
-    dependencies:
-      '@types/express': 4.17.17
-    dev: false
 
   /@types/prettier/2.7.2:
     resolution: {integrity: sha512-KufADq8uQqo1pYKVIYzfKbJfBAc0sOeXqGbFaSpv8MRmC/zXgowNZmFcbngndGk922QDmOASEXUZCaY48gs4cg==}
