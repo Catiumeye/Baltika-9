@@ -19,6 +19,7 @@ import { TokenService } from "./token.service";
 import { GitHubAuthService } from "./github-auth.service";
 import { AuthProviderService } from "./auth-provider.service";
 import { LoginSocialInput } from "../models/input/login-social-input.type";
+import { IReqInfo } from "@app/common/decorators/req-data.decorator";
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,8 @@ export class AuthService {
     ) {}
 
     async register(
-        input: RegisterUserInputType
+        input: RegisterUserInputType,
+        reqInfo: IReqInfo
     ): Promise<RegisterUserResultType> {
         const notUnique = await this.prismaService.user.findFirst({
             where: {
@@ -65,9 +67,9 @@ export class AuthService {
     }
 
     async login(
-        input: LoginInputType
+        input: LoginInputType,
+        reqInfo: IReqInfo,
     ): Promise<LoginResultType> {
-        this.jwtService
         const isMail = isEmail(input.username_or_email);
         
         const user = await this.prismaService.user.findFirst({
@@ -93,7 +95,8 @@ export class AuthService {
     }
 
     async loginSocial(
-        input: LoginSocialInput
+        input: LoginSocialInput,
+        reqInfo: IReqInfo
     ): Promise<LoginResultType> {
         const socAuthService = this.authProviderService.determineSocial(input.auth_type);
         
@@ -120,12 +123,15 @@ export class AuthService {
         
         if (!user) return { code: 2, message: 'incorrect data' };
 
-        const tokens = await this.tokenService.createAuthTokens(user, input.auth_type);
+        const tokens = await this.tokenService.createAuthTokens(user, reqInfo);
 
         return {access_token: tokens.access_token, refresh_token: tokens.refresh_token};
     }
 
-    async registerSocial(input: RegisterSocialInput): Promise<RegisterSocialResult> {        
+    async registerSocial(
+        input: RegisterSocialInput,
+        reqInfo: IReqInfo
+    ): Promise<RegisterSocialResult> {        
         const socAuthService = this.authProviderService.determineSocial(input.auth_type);
         if (!input.code) {
             const location = await socAuthService.receiveCode();
@@ -163,7 +169,6 @@ export class AuthService {
             data: {
                 username: input.user_data.username,
                 email: userData.email,
-                avatars,
                 status: UserStatus.ACTIVE,
                 auth: {
                     create: {
@@ -173,18 +178,17 @@ export class AuthService {
                 },
                 profile: {
                     create: {
-
+                        avatars
                     }
                 }
             },
             include: {
-                avatars: true,
                 auth: true,
                 profile: true
             }
         })
 
-        const tokens = await this.tokenService.createAuthTokens(user, input.auth_type);
+        const tokens = await this.tokenService.createAuthTokens(user, reqInfo);
 
         return { access_token: tokens.access_token, refresh_token: tokens.refresh_token };
     }

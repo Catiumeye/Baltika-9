@@ -13,7 +13,6 @@ model Auth {
   external_id String   @db.VarChar
 
   user     User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  sessions AuthSession[]
 
   @@map("auth")
 }
@@ -24,18 +23,18 @@ enum AuthType {
   GITHUB
 }
 
-model AuthSession {
+model Session {
   id            String   @id @default(uuid())
-  user_agent    String   @db.VarChar
-  ip            String   @db.Inet
-  auth_id       String   @db.Uuid
-  expired_at    DateTime
+  ip            String?  @db.Inet
+  user_id       String   @db.Uuid
+  is_used       Boolean  @db.Boolean @default(false)
+  metadata      Json     @db.JsonB
   refresh_token String   @unique @db.VarChar
+  
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  auth Auth @relation(fields: [auth_id], references: [user_id], onDelete: Cascade)
-
-  @@index([refresh_token])
-  @@map("auth_session")
+  @@index([user_id])
+  @@map("session")
 }
 
 model User {
@@ -50,8 +49,8 @@ model User {
 
   auth    Auth?
   profile UserProfile?
-  avatars Avatar[]
   files   File[]
+  sessions Session[]
 
   @@map("user")
 }
@@ -70,14 +69,14 @@ enum UserStatus {
 }
 
 model UserProfile {
-  id          String   @id @default(uuid()) @db.Uuid
-  user_id     String   @unique @db.Uuid
+  user_id     String   @id @db.Uuid
   bio         String?  @db.VarChar
   last_active DateTime @default(now())
 
   user           User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   topics         Topic[]
   topic_comments TopicComment[]
+  avatars Avatar[]
 
   @@map("user_profile")
 }
@@ -92,7 +91,7 @@ model Topic {
   tags        String[]
   deleted     DateTime?   @map("deleted_at")
 
-  author   UserProfile    @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author   UserProfile    @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   category TopicCategory  @relation(fields: [category_id], references: [id], onDelete: Cascade)
   comments TopicComment[]
 
@@ -127,7 +126,7 @@ model TopicComment {
   message   String    @db.VarChar
   deleted   DateTime? @map("deleted_at")
 
-  author   UserProfile    @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author   UserProfile    @relation(fields: [author_id], references: [user_id], onDelete: Cascade)
   topic    Topic          @relation(fields: [topic_id], references: [id], onDelete: Cascade)
   parrent  TopicComment?  @relation("ParentChildrenTopicComment", fields: [parent_id], references: [id])
   children TopicComment[] @relation("ParentChildrenTopicComment")
@@ -155,7 +154,7 @@ model Avatar {
   file_id String? @db.Uuid
   url     String? @db.VarChar
 
-  user User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user UserProfile  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   file File? @relation(fields: [file_id], references: [id], onDelete: Cascade)
 
   @@map("avatar")

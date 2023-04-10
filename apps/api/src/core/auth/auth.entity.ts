@@ -2,7 +2,6 @@ import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { AuthType } from "@prisma/client";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { User } from "../user/user.entity";
-import { AuthSession } from "./auth-session.entity";
 
 registerEnumType(AuthType, {
     name: 'AuthType'
@@ -35,9 +34,4 @@ export class Auth {
 
     @Field(() => ID)
     external_id: string;
-
-    @Field(() => [AuthSession], {
-        nullable: true
-    })
-    sessions?: AuthSession[];
 }

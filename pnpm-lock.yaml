@@ -19,6 +19,7 @@ specifiers:
   '@types/jest': 29.2.4
   '@types/node': 18.11.18
   '@types/supertest': ^2.0.11
+  '@types/ua-parser-js': ^0.7.36
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
   argon2: ^0.30.3
@@ -46,6 +47,7 @@ specifiers:
   tsc-alias: ^1.8.2
   tsconfig-paths: ^4.1.2
   typescript: ^4.7.4
+  ua-parser-js: ^1.0.35
   webpack: ^5.76.3
 
 dependencies:
@@ -60,6 +62,7 @@ dependencies:
   '@nestjs/mapped-types': 1.2.2_933b2479c2c9775104abf401affa7efb
   '@nestjs/platform-express': 9.3.9_ffcae472daf98f8e7f149b1b9afd514e
   '@prisma/client': 4.10.1_prisma@4.10.1
+  '@types/ua-parser-js': 0.7.36
   argon2: 0.30.3
   axios: 1.3.4
   class-transformer: 0.5.1
@@ -69,6 +72,7 @@ dependencies:
   jsonwebtoken: 9.0.0
   reflect-metadata: 0.1.13
   rxjs: 7.8.0
+  ua-parser-js: 1.0.35
 
 devDependencies:
   '@nestjs/cli': 9.2.0
@@ -1751,6 +1755,10 @@ packages:
     dependencies:
       '@types/superagent': 4.1.16
     dev: true
+
+  /@types/ua-parser-js/0.7.36:
+    resolution: {integrity: sha512-N1rW+njavs70y2cApeIw1vLMYXRwfBy+7trgavGuuTfOd7j1Yh7QTRc/yqsPl6ncokt72ZXuxEU0PiCp9bSwNQ==}
+    dev: false
 
   /@types/uuid/9.0.1:
     resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
@@ -5711,6 +5719,10 @@ packages:
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
+
+  /ua-parser-js/1.0.35:
+    resolution: {integrity: sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA==}
+    dev: false
 
   /uid/2.0.1:
     resolution: {integrity: sha512-PF+1AnZgycpAIEmNtjxGBVmKbZAQguaa4pBUq6KNaGEcpzZ2klCNZLM34tsjp76maN00TttiiUf6zkIBpJQm2A==}

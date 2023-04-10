@@ -23,15 +23,15 @@ CREATE TABLE "auth" (
 );
 
 -- CreateTable
-CREATE TABLE "auth_session" (
+CREATE TABLE "session" (
     "id" TEXT NOT NULL,
-    "user_agent" VARCHAR NOT NULL,
-    "ip" INET NOT NULL,
-    "auth_id" UUID NOT NULL,
-    "expired_at" TIMESTAMP(3) NOT NULL,
+    "ip" INET,
+    "user_id" UUID NOT NULL,
+    "is_used" BOOLEAN NOT NULL DEFAULT false,
+    "metadata" JSONB NOT NULL,
     "refresh_token" VARCHAR NOT NULL,
 
-    CONSTRAINT "auth_session_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -50,12 +50,11 @@ CREATE TABLE "user" (
 
 -- CreateTable
 CREATE TABLE "user_profile" (
-    "id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "bio" VARCHAR,
     "last_active" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "user_profile_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "user_profile_pkey" PRIMARY KEY ("user_id")
 );
 
 -- CreateTable
@@ -116,19 +115,16 @@ CREATE TABLE "avatar" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "auth_session_refresh_token_key" ON "auth_session"("refresh_token");
+CREATE UNIQUE INDEX "session_refresh_token_key" ON "session"("refresh_token");
 
 -- CreateIndex
-CREATE INDEX "auth_session_refresh_token_idx" ON "auth_session"("refresh_token");
+CREATE INDEX "session_user_id_idx" ON "session"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_profile_user_id_key" ON "user_profile"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "topic_category_title_key" ON "topic_category"("title");
@@ -140,19 +136,19 @@ CREATE UNIQUE INDEX "topic_comment_id_key" ON "topic_comment"("id");
 ALTER TABLE "auth" ADD CONSTRAINT "auth_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "auth_session" ADD CONSTRAINT "auth_session_auth_id_fkey" FOREIGN KEY ("auth_id") REFERENCES "auth"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_profile" ADD CONSTRAINT "user_profile_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "topic" ADD CONSTRAINT "topic_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user_profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "topic" ADD CONSTRAINT "topic_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user_profile"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "topic" ADD CONSTRAINT "topic_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "topic_category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "topic_comment" ADD CONSTRAINT "topic_comment_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user_profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "topic_comment" ADD CONSTRAINT "topic_comment_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "user_profile"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "topic_comment" ADD CONSTRAINT "topic_comment_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topic"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -164,7 +160,7 @@ ALTER TABLE "topic_comment" ADD CONSTRAINT "topic_comment_parent_id_fkey" FOREIG
 ALTER TABLE "file" ADD CONSTRAINT "file_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "avatar" ADD CONSTRAINT "avatar_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "avatar" ADD CONSTRAINT "avatar_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user_profile"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "avatar" ADD CONSTRAINT "avatar_file_id_fkey" FOREIGN KEY ("file_id") REFERENCES "file"("id") ON DELETE CASCADE ON UPDATE CASCADE;

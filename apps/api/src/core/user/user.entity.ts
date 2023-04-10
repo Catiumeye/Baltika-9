@@ -2,6 +2,9 @@ import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { UserRole } from "@prisma/client";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { Auth } from "../auth/auth.entity";
+import { Session } from "../auth/session.entity";
+import { TopicComment } from "../topic/topic-comment.entity";
+import { Topic } from "../topic/topic.entity";
 import { UserProfile } from "../user-profile/user-profile.entity";
 import { Avatar } from "./avatar.entity";
 import { File } from "./file.entity";
@@ -15,9 +18,8 @@ export class UsernameValidator implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) { 
     const match = value.match(/^[a-z0-9]{3,30}$/i);    
     return !!match;
-
-    
   }
+  
   defaultMessage(args: ValidationArguments) {
     return 'incorrect username';
   }
@@ -48,15 +50,15 @@ export class User {
     })
     auth?: Auth | null;
 
+    @Field(() => [Session], {
+        nullable: true
+    })
+    sessions?: Session[];
+
     @Field(() => UserProfile, {
         nullable: true
     })
     userProfile?: UserProfile | null;
-
-    @Field(() => [Avatar], {
-        nullable: true
-    })
-    avatars?: Avatar[] | null;
 
     @Field(() => [File], {
         nullable: true

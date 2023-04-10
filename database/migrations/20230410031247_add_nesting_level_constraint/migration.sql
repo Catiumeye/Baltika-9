@@ -1,5 +1,6 @@
 -- This is an empty migration.
 
+
 CREATE FUNCTION check_nesting_level_two(parentID uuid) RETURNS BOOLEAN AS $$
 BEGIN
     IF parentID IS NULL THEN
