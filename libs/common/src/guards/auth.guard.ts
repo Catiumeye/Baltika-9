@@ -1,9 +1,9 @@
-import { CanActivate, ExecutionContext, Inject, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { JwtService } from "@nestjs/jwt";
 import { StrategyConfigService } from "apps/api/src/core/auth/services/strategy-config.service";
-
-
+import { JwtPayload } from "apps/api/src/core/auth/services/token.service";
+import { Request } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -14,24 +14,22 @@ export class AuthGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext) {      
         const ctx = GqlExecutionContext.create(context);
-        const req = ctx.getContext().req;
+        const req = ctx.getContext().req as Request;
         
-        const { ok, user } = this.validate(req.headers.authorization);
+        const { user } = this.validate(req.headers.authorization);
         req.user = user;
-        return ok;
+        return !!user;
     }
 
     validate(authorization?: string) {
-        if (!authorization) return { ok: false };
+        if (!authorization) throw new UnauthorizedException();
         const [type, token] = authorization.split(' ');
-        if (type !== 'Bearer') return { ok: false };
-
-        const user = this.jwtService.decode(token);
+        if (type !== 'Bearer') throw new UnauthorizedException();
         
-        this.jwtService.verify(token, {
+        const user = this.jwtService.verify<JwtPayload>(token, {
             publicKey: this.stategyConf.config.JWT.accessToken.publicKey,
         });
 
-        return { ok: true, user }
+        return { user: user }
     }
 }

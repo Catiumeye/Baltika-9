@@ -1,8 +1,8 @@
-import { IReqInfo, ReqInfo } from "@app/common/decorators/req-data.decorator";
-import { UserData } from "@app/common/decorators/user-data.decorator";
+import { Roles } from "@app/common/decorators/roles.decorator";
 import { AuthGuard } from "@app/common/guards/auth.guard";
-import { ExecutionContext, UseGuards } from "@nestjs/common";
-import { Args, Context, ID, Int, ResolveField, Resolver } from "@nestjs/graphql";
+import { RoleGuard } from "@app/common/guards/roles.guard";
+import { UseGuards } from "@nestjs/common";
+import { Args, ID, Int, ResolveField, Resolver } from "@nestjs/graphql";
 import { GetTopicResult } from "../models/results/get-topic-result.type";
 import { TopicService } from "../services/topic.service";
 import { TopicQueryType, TopicRootResolver } from "./topic-root.resolver";
@@ -13,13 +13,12 @@ export class TopicQueryResolver extends TopicRootResolver {
         super();
     }
 
-    @UseGuards(AuthGuard)
-    @ResolveField(() => Int, {})
+    @Roles('ALL')
+    @UseGuards(AuthGuard, RoleGuard)
+    @ResolveField(() => GetTopicResult)
     async getTopic(
-        @UserData() user: any,
         @Args('id', {type: () => ID}) id: string,
     ): Promise<GetTopicResult> {
-        
         
         return await this.topicService.getTopic(id);
     }

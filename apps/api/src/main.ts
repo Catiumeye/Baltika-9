@@ -3,10 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { exceptionFactory } from '@app/common/utils/error-formatter.util';
 import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from './core/auth/services/token.service';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
+
 
     app.useGlobalPipes(
         new ValidationPipe({
@@ -23,7 +25,17 @@ async function bootstrap() {
         port, 
         host, 
         () => {
-      Logger.log(`Server started ass ♂${host}:${port}♂`)
-    });
+            Logger.log(`Server started ass ♂${host}:${port}♂`)
+        }
+    );
 }
+
+declare global { 
+    namespace Express { 
+        export interface Request { 
+            user?: JwtPayload; 
+        } 
+    } 
+}
+
 bootstrap();
