@@ -6,6 +6,8 @@ import { Args, ID, Int, ResolveField, Resolver } from "@nestjs/graphql";
 import { GetTopicResult } from "../models/results/get-topic-result.type";
 import { TopicService } from "../services/topic.service";
 import { TopicQueryType, TopicRootResolver } from "./topic-root.resolver";
+import { GetTopicsResult } from "../models/results/get-topics-result.type";
+import { PaginationInput } from "@app/common/models/input/pagination-input.type";
 
 @Resolver(TopicQueryType)
 export class TopicQueryResolver extends TopicRootResolver {
@@ -13,8 +15,7 @@ export class TopicQueryResolver extends TopicRootResolver {
         super();
     }
 
-    @Roles('ALL')
-    @UseGuards(AuthGuard, RoleGuard)
+
     @ResolveField(() => GetTopicResult)
     async getTopic(
         @Args('id', {type: () => ID}) id: string,
@@ -23,4 +24,10 @@ export class TopicQueryResolver extends TopicRootResolver {
         return await this.topicService.getTopic(id);
     }
 
+    @ResolveField(() => GetTopicsResult)
+    async getTopics(
+        @Args() pagionation: PaginationInput
+    ) {
+        return await this.topicService
+    }
 }

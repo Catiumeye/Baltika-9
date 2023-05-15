@@ -8,6 +8,9 @@ import { CreateTopicResultType } from "../models/results/create-topic-result.typ
 import { CreateTopicCommentInput } from "../models/input/create-topic-comment-input.type";
 import { CreateTopicCommentResult } from "../models/results/create-topic-comment-result.type";
 import { GetTopicResult } from "../models/results/get-topic-result.type";
+import { PaginationInput } from "@app/common/models/input/pagination-input.type";
+import { GetTopicsResult } from "../models/results/get-topics-result.type";
+import { paginationUtil } from "@app/common/utils/pagination-util";
 
 @Injectable()
 export class TopicService {
@@ -96,5 +99,15 @@ export class TopicService {
         })
 
         return {comment: comment}
+    }
+
+    async getTopics(
+        pagination: PaginationInput,
+    ): Promise<GetTopicsResult> {
+        const topics = await this.prismaService.topic.findMany({
+            ...paginationUtil(pagination)
+        })
+
+        return { topics }
     }
 }

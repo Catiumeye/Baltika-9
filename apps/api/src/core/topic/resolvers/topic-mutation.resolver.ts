@@ -1,5 +1,5 @@
 import { TopicService } from '../services/topic.service';
-import { Args, Int, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, ID, Int, ResolveField, Resolver } from '@nestjs/graphql';
 import { TopicMutationType, TopicRootResolver } from './topic-root.resolver';
 import { CreateTopicCategoryInputType } from '../models/input/create-topic-category-input.type';
 import { CreateTopicCategoryResultType } from '../models/results/create-topic-category-result.type';
@@ -12,7 +12,7 @@ import { AuthGuard } from '@app/common/guards/auth.guard';
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { JwtPayload } from '../../auth/services/token.service';
 import { UserRole } from '@prisma/client';
-import { Roles } from '@app/common/decorators/roles.decorator';
+import { RolePermission, Roles } from '@app/common/decorators/roles.decorator';
 import { RoleGuard } from '@app/common/guards/roles.guard';
 
 @Resolver(TopicMutationType)
@@ -21,22 +21,22 @@ export class TopicMutationResolver extends TopicRootResolver {
         super();
     }
 
+    @RolePermission(['USER', 'MODER', 'ADMIN'])
     @ResolveField(() => CreateTopicCategoryResultType)
     async createTopicCategory(
         @Args() input: CreateTopicCategoryInputType
     ): Promise<CreateTopicCategoryResultType> {
+        console.log('CREATE CAT');
+        
         return await this.topicService.createTopicCategory(input);
     }
 
-    @Roles('USER', 'MODER', 'ADMIN')
-    @UseGuards(AuthGuard, RoleGuard)
+    @RolePermission(['USER', 'MODER', 'ADMIN'])
     @ResolveField(() => CreateTopicResultType)
     async createTopic(
         @UserData() user: JwtPayload,
         @Args() input: CreateTopicInputType
     ): Promise<CreateTopicResultType> {
-        console.log('sss', user);
-        
         return await this.topicService.createTopic(input);
     }
 
@@ -45,5 +45,12 @@ export class TopicMutationResolver extends TopicRootResolver {
         @Args() input: CreateTopicCommentInput
     ): Promise<CreateTopicCommentResult> {
         return await this.topicService.createTopicComment(input);
+    }
+
+    @RolePermission(null, {})
+    async deleteTopic(
+        @Args('id', {type: () => ID}) id: string
+    ) {
+        return 
     }
 }

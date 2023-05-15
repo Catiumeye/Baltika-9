@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { Auth } from "../auth/auth.entity";
 import { Session } from "../auth/session.entity";
@@ -11,6 +11,10 @@ import { File } from "./file.entity";
 
 registerEnumType(UserRole, {
     name: 'UserRole'
+})
+
+registerEnumType(UserStatus, {
+    name: 'UserStatus'
 })
 
 @ValidatorConstraint({ name: 'UsernameValidator', async: false })
@@ -28,22 +32,25 @@ export class UsernameValidator implements ValidatorConstraintInterface {
 @ObjectType()
 export class User {
     @Field(() => ID)
-    id: string;
+    id?: string;
 
     @Field(() => String)
-    username: string
+    username?: string
 
     @Field(() => String)
-    email: string;
+    email?: string;
+
+    @Field(() => UserStatus)
+    status: UserStatus;
 
     @Field(() => UserRole)
-    role: UserRole;
+    role?: UserRole;
 
     @Field(() => Date)
-    created_at: Date;
+    created_at?: Date;
 
     @Field(() => Date)
-    updated_at: Date;
+    updated_at?: Date;
 
     @Field(() => Auth, {
         nullable: true

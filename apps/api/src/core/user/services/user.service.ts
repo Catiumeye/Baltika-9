@@ -11,10 +11,15 @@ import { GetUsersInput } from "../models/input/get-users-input.type";
 import { PaginationInput } from "@app/common/models/input/pagination-input.type";
 import { GetUsersResult } from "../models/results/get-users-result.type";
 import { paginationUtil } from "@app/common/utils/pagination-util";
+import { isEmail, isUUID } from "class-validator";
+import { UserCacheService } from "@app/common/cache/services/user-cache.service";
+import { BanUserResult } from "../models/results/ban-user-result.type";
+import { BanUserInput } from "../models/input/ban-user-input.type";
 @Injectable()
 export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
+        private readonly userCacheService: UserCacheService
     ) {}
 
     async getUser(
@@ -55,5 +60,25 @@ export class UserService {
         })
         
         return { users };
+    }
+
+    async banUser(
+        input: BanUserInput
+    ): Promise<BanUserResult> {
+        const user = await this.prismaService.user.update({
+            where: input,
+            data: {
+                status: 'BLOCKED'
+            }
+        })
+
+        if(!user) return { user, code: 1, message: 'cannot update user in db'}
+
+        const cacheUpdUserStatus = await this.userCacheService.set(user.id, user);
+        if (cacheUpdUserStatus !=="OK") {
+            return { user, code: 1, message: 'cannot update user cache'}
+        }
+
+        return { user }
     }
 }

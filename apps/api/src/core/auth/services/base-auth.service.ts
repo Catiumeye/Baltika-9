@@ -14,7 +14,6 @@ export interface IGetUserInfoRes {
     avatar: string;
 }
 
-
 @Injectable()
 export abstract class BaseAuthService<T extends Exclude<keyof typeof AuthType, 'JWT'>> {
     protected clientID: string;
@@ -25,7 +24,7 @@ export abstract class BaseAuthService<T extends Exclude<keyof typeof AuthType, '
     constructor(
         public type: T,
         protected readonly strategyConfigService: StrategyConfigService,
-    ) {;
+    ) {
         this.clientID = strategyConfigService.config[type].clientID;
         this.clientSecret = strategyConfigService.config[type].clientSecret;
         this.redirectURL = strategyConfigService.config[type].redirectURL;

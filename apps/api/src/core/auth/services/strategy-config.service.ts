@@ -16,8 +16,8 @@ export class StrategyConfigService implements JwtOptionsFactory {
         this.config = {
             JWT: {
                 accessToken: {
-                    privateKey: fs.readFileSync(path.join(process.cwd(), 'accessPrivate.key')),
-                    publicKey: fs.readFileSync(path.join(process.cwd(), 'accessPublic.key')),
+                    privateKey: fs.readFileSync(path.join(process.cwd(), 'keys', 'accessPrivate.key')),
+                    publicKey: fs.readFileSync(path.join(process.cwd(), 'keys', 'accessPublic.key')),
                     signOptions: {
                         expiresIn: this.configService.getOrThrow('ACCESS_TOKEN_EXP_IN'),
                         noTimestamp: true,
@@ -25,9 +25,9 @@ export class StrategyConfigService implements JwtOptionsFactory {
                     },
                 },
                 refreshToken: {
-                    publicKey: fs.readFileSync(path.join(process.cwd(), 'refreshPublic.key')),
+                    publicKey: fs.readFileSync(path.join(process.cwd(), 'keys', 'refreshPublic.key')),
                     signOptions: {
-                        privateKey: fs.readFileSync(path.join(process.cwd(), 'refreshPrivate.key')),
+                        privateKey: fs.readFileSync(path.join(process.cwd(), 'keys', 'refreshPrivate.key')),
                         expiresIn: this.configService.getOrThrow('REFRESH_TOKEN_EXP_IN'),
                         noTimestamp: true,
                         algorithm: "RS256",

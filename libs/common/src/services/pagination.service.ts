@@ -2,8 +2,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 
-import { PaginationInputType } from 'common/models/input/pagination-input.type';
-import { PaginationResultType } from 'common/models/result/pagination-result.type';
+// import { PaginationInputType } from 'common/models/input/pagination-input.type';
+// import { PaginationResultType } from 'common/models/result/pagination-result.type';
 
 
 import { PrismaService } from './prisma.service';

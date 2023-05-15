@@ -11,10 +11,10 @@ import { GitHubAuthService } from "./services/github-auth.service";
 import { GoogleAuthService } from "./services/google-auth.service";
 import { StrategyConfigService } from "./services/strategy-config.service";
 import { TokenService } from "./services/token.service";
+import { JwtCommonService } from "./services/jwt-common.service";
 
 @Module({
     imports: [
-        UserModule,
         JwtModule.registerAsync({
             useClass: StrategyConfigService
         })
@@ -26,16 +26,16 @@ import { TokenService } from "./services/token.service";
         AuthQueryResolver,
         AuthService,
         AuthProviderService,
+        JwtCommonService,
         TokenService,
         StrategyConfigService,
         GoogleAuthService,
         GitHubAuthService,
     ],
     exports: [
+        JwtCommonService,
         JwtModule,
         StrategyConfigService
     ]
 })
-export class AuthModule {
-
-}
+export class AuthModule {}

@@ -1,8 +1,9 @@
 import { UserService } from '../services/user.service';
-import { RegisterUserResultType } from '../../auth/models/results/register-user-result.type';
 import { Args, ResolveField, Resolver } from '@nestjs/graphql';
 import { UserMutationType, UserRootResolver } from './user-root.resolver';
-import { RegisterUserInputType } from '../../auth/models/input/register-user-input.type';
+import { BanUserInput } from '../models/input/ban-user-input.type';
+import { BanUserResult } from '../models/results/ban-user-result.type';
+import { RolePermission } from '@app/common/decorators/roles.decorator';
 
 @Resolver(UserMutationType)
 export class UserMutationResolver extends UserRootResolver {
@@ -19,4 +20,11 @@ export class UserMutationResolver extends UserRootResolver {
     //     return 0;
     // }
 
+    @RolePermission(['MODER', 'ADMIN'], { blocked: false })
+    @ResolveField(() => BanUserResult)
+    async banUser(
+        @Args() input: BanUserInput
+    ): Promise<BanUserResult> {
+        return await this.userService.banUser(input);
+    }
 }

@@ -15,13 +15,13 @@ export class Topic {
     id: string;
 
     @Field(() => TopicStatus)
-    status: TopicStatus;
+    status?: TopicStatus;
     
     @Field(() => UserProfile)
     author?: UserProfile;
     
     @Field(() => String)
-    title: string;
+    title?: string;
     
     @Field(() => String)
     content?: string;
@@ -29,6 +29,8 @@ export class Topic {
     @Field(() => TopicCategory)
     category?: TopicCategory;
 
-    @Field(() => [TopicComment])
+    @Field(() => [TopicComment], {
+        nullable: true
+    })
     comments?: TopicComment[];
 }

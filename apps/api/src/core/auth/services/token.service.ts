@@ -3,7 +3,7 @@ import { PrismaService } from "@app/common/services/prisma.service";
 import { RandomGeneratorService } from "@app/common/services/random-generator.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { AuthType, UserRole } from "@prisma/client";
+import { AuthType, UserRole, UserStatus } from "@prisma/client";
 import { User } from "../../user/user.entity";
 import { StrategyConfigService } from "./strategy-config.service";
 
@@ -16,6 +16,7 @@ export enum TokenType {
 export interface JwtPayload {
     type: TokenType; // token type
     role: UserRole; // user role
+    status: UserStatus, // user status
     sub: string; // user id
     exp: number; // expires in
 }
@@ -41,7 +42,8 @@ export class TokenService {
                 refresh_token: refresh_token,
                 ip: ip,
                 metadata: metadata,
-                user_id: user.id
+                user_id: user.id as string,
+                is_used: false
             }
         })
         return session.refresh_token;
@@ -50,7 +52,8 @@ export class TokenService {
     async createAuthTokens(user: User, reqInfo: IReqInfo): Promise<{access_token: string; refresh_token: string}> {
         const access_token = await this.jwtService.signAsync({ 
             type: TokenType.ACCESS_JWT,
-            role: user.role, 
+            role: user.role,
+            status: user.status,
             sub: user.id,
         } as JwtPayload);
         

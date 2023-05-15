@@ -6,13 +6,13 @@ import { Topic } from "./topic.entity";
 @ObjectType()
 export class TopicComment {
     @Field(() => ID)
-    id: string;
+    id?: string;
 
     @Field(() => ID)
-    topic_id: string;
+    topic_id?: string;
 
     @Field(() => ID)
-    author_id: string;
+    author_id?: string;
 
     @Field(() => ID, {
         nullable: true
@@ -20,7 +20,7 @@ export class TopicComment {
     parent_id?: string | null;
 
     @Field(() => String)
-    message: string;
+    message?: string;
     
     @Field(() => UserProfile, {
         nullable: true

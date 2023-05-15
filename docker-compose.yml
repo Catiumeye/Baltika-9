@@ -13,5 +13,8 @@ services:
   redis:
     image: redis:latest
     ports:
-      - "6969:6379"
+      - "${REDIS_PORT}:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
     restart: always

@@ -3,13 +3,15 @@ import { RegisterUserResultType } from '../../auth/models/results/register-user-
 import { GetUserResultType } from '../models/results/get-user-result.type';
 import { GetUsersResult } from '../models/results/get-users-result.type';
 import { User } from '../user.entity';
+import { BanUserResult } from '../models/results/ban-user-result.type';
 
 @ObjectType()
 export class UserMutationType {
-    @Field(() => User, {
-        description: ''
-    })
+    @Field(() => User)
     delete: User;
+
+    @Field(() => BanUserResult)
+    banUser: BanUserResult;
 }
 
 @ObjectType()

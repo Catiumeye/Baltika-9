@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@apollo/server': ^4.5.0
   '@apollo/subgraph': ^2.4.0
+  '@nestjs-modules/ioredis': ^1.0.1
   '@nestjs/apollo': ^11.0.4
   '@nestjs/cli': ^9.0.0
   '@nestjs/common': ^9.0.0
@@ -54,6 +55,7 @@ specifiers:
 dependencies:
   '@apollo/server': 4.5.0_graphql@16.6.0
   '@apollo/subgraph': 2.4.0_graphql@16.6.0
+  '@nestjs-modules/ioredis': 1.0.1_fb9abe67440e5142dd20efb8537b35ef
   '@nestjs/apollo': 11.0.4_c8aec991c232a43672f24483e6b8d597
   '@nestjs/common': 9.3.9_b11626e1d3e8723ed81a03aa155de8e2
   '@nestjs/config': 2.3.1_4c61a88cc57ea57f7eccc2d9182d16b9
@@ -1168,6 +1170,18 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: false
+
+  /@nestjs-modules/ioredis/1.0.1_fb9abe67440e5142dd20efb8537b35ef:
+    resolution: {integrity: sha512-UhIOqL5pXeJlCucHMkJONwqecvLFySW/95uw34Umh0ld7v+6tvYRK3JHQYcJqzlmNiq52bfNxf7CUpuHCSdA3A==}
+    peerDependencies:
+      '@nestjs/common': ^6.7.0 || ^7.0.0 || ^8.0.0
+      '@nestjs/core': ^6.7.0 || ^7.0.0 || ^8.0.0
+      ioredis: ^4.0.0
+    dependencies:
+      '@nestjs/common': 9.3.9_b11626e1d3e8723ed81a03aa155de8e2
+      '@nestjs/core': 9.3.9_87806c4787b201deba567c81fca6e27b
+      ioredis: 5.3.1
     dev: false
 
   /@nestjs/apollo/11.0.4_c8aec991c232a43672f24483e6b8d597:

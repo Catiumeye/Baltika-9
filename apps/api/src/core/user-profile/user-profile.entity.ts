@@ -13,7 +13,7 @@ export class UserProfile {
     user?: User;
 
     @Field(() => ID)
-    user_id: string;
+    user_id?: string;
     
     @Field(() => String, {
         nullable: true
@@ -21,7 +21,7 @@ export class UserProfile {
     bio?: string | null;
 
     @Field(() => Date)
-    last_active: Date;
+    last_active?: Date;
 
     @Field(() => [Topic])
     topics?: Topic[];
