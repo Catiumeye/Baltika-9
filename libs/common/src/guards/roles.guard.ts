@@ -8,6 +8,7 @@ import { UserCacheService } from "../cache/services/user-cache.service";
 import { JwtCommonService } from "apps/api/src/core/auth/services/jwt-common.service";
 import { User } from "apps/api/src/core/user/user.entity";
 import { PrismaService } from "../services/prisma.service";
+import { JwtPayload } from "apps/api/src/core/auth/services/token.service";
 
 
 
@@ -24,23 +25,27 @@ export class RoleGuard implements CanActivate {
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req as Request;
 
-        const user = req.user;
+        const user = req.user as JwtPayload;
         const uCache = await this.userCacheService.get<User>(user?.sub as string);
         console.log('UCACHE: ', uCache);
-        console.log('req.user => ', ctx.getContext().req.user)
+        console.log('user => ', user)
         const roles: TRoles = this.reflector.get<TRoles>('roles', context.getHandler());
         const blocked: boolean = this.reflector.get<boolean>('blocked', context.getHandler());
-
-        if (blocked === false) {
-            const [, token] = this.jwtCommonService.jwtExtract(req.headers.authorization) as [string, string];
-            const jwtDecoded = this.jwtCommonService.jwtAccessVerify(token);
-            if (jwtDecoded.status === 'BLOCKED' || jwtDecoded.status === 'FROZEN') return false;
+        console.log('BLOCKED', blocked);
+        
+        if (!blocked) {
+            console.log('blocked Start')
+            if (user.status === 'BLOCKED' || user.status === 'FROZEN') return false;
+            console.log('before ucache!!')
             if (!uCache) {
-                const userFromDB = await this.prismaService.user.findUniqueOrThrow({ where: { id: jwtDecoded.sub } });
+                const userFromDB = await this.prismaService.user.findUniqueOrThrow({ where: { id: user.sub } });
+                
                 return (userFromDB.status !== 'BLOCKED' && userFromDB.status !== 'FROZEN'); 
             }
+
             if (uCache.status === 'BLOCKED' || uCache.status === 'FROZEN') return false; 
         }
+
         if (roles === null) return true;
         console.log(`UROLE ${user?.role} // aviableRole ${roles} /// result ${!roles.includes(user?.role as never)}`);
 

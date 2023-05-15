@@ -47,10 +47,11 @@ export class TopicMutationResolver extends TopicRootResolver {
         return await this.topicService.createTopicComment(input);
     }
 
-    @RolePermission(null, {})
+    @RolePermission(null)
     async deleteTopic(
-        @Args('id', {type: () => ID}) id: string
+        @Args('id', {type: () => ID}) id: string,
+        @UserData() user: JwtPayload
     ) {
-        return 
+        return await this.topicService.deleteTopic(id, user);
     }
 }

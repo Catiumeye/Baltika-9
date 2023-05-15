@@ -41,7 +41,7 @@ export class User {
     email?: string;
 
     @Field(() => UserStatus)
-    status: UserStatus;
+    status?: UserStatus;
 
     @Field(() => UserRole)
     role?: UserRole;

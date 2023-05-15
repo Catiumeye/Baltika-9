@@ -11,6 +11,8 @@ import { GetTopicResult } from "../models/results/get-topic-result.type";
 import { PaginationInput } from "@app/common/models/input/pagination-input.type";
 import { GetTopicsResult } from "../models/results/get-topics-result.type";
 import { paginationUtil } from "@app/common/utils/pagination-util";
+import { DeleteTopicResult } from "../models/results/delete-topic-result.type";
+import { JwtPayload } from "../../auth/services/token.service";
 
 @Injectable()
 export class TopicService {
@@ -58,7 +60,7 @@ export class TopicService {
             }
         })
         
-        return {topic}
+        return { topic }
     }
 
     async createTopicCategory(
@@ -109,5 +111,24 @@ export class TopicService {
         })
 
         return { topics }
+    }
+
+    async deleteTopic(
+        id: string,
+        user: JwtPayload
+    ): Promise<DeleteTopicResult> {
+        if (user.role === 'MODER' || user.role === 'ADMIN') {
+            const topic = await this.prismaService.topic.delete({
+                where: { id }
+            });
+            
+            return { ok: !!topic };
+        }
+
+        const topic = await this.prismaService.topic.deleteMany({
+            where: { id: id, author_id: user.sub }
+        });
+
+        return { ok: !!topic.count };
     }
 }
