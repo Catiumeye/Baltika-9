@@ -27,16 +27,13 @@ export class RoleGuard implements CanActivate {
 
         const user = req.user as JwtPayload;
         const uCache = await this.userCacheService.get<User>(user?.sub as string);
-        console.log('UCACHE: ', uCache);
-        console.log('user => ', user)
+
         const roles: TRoles = this.reflector.get<TRoles>('roles', context.getHandler());
         const blocked: boolean = this.reflector.get<boolean>('blocked', context.getHandler());
-        console.log('BLOCKED', blocked);
         
         if (!blocked) {
-            console.log('blocked Start')
             if (user.status === 'BLOCKED' || user.status === 'FROZEN') return false;
-            console.log('before ucache!!')
+
             if (!uCache) {
                 const userFromDB = await this.prismaService.user.findUniqueOrThrow({ where: { id: user.sub } });
                 
@@ -47,10 +44,8 @@ export class RoleGuard implements CanActivate {
         }
 
         if (roles === null) return true;
-        console.log(`UROLE ${user?.role} // aviableRole ${roles} /// result ${!roles.includes(user?.role as never)}`);
 
         if (!roles.includes(user?.role as never)) return false;
-        console.log('roles', roles);
         
         return true;
     }

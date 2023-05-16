@@ -5,9 +5,9 @@ import { User } from "../../user.entity";
 
 
 @ObjectType()
-export class BanUserResult extends BaseResultType {
+export class UnbanUserResult extends BaseResultType {
     @Field(() => User, {
         nullable: true
     })
-    user?: User | null;
+    user?: User | null; 
 }

@@ -4,6 +4,7 @@ import { UserQueryResolver } from "./resolvers/user-query.resolver";
 import { UserRootResolver } from "./resolvers/user-root.resolver";
 import { UserService } from "./services/user.service";
 import { AuthModule } from "../auth/auth.module";
+import { UserHelper } from "./services/user.helper";
 
 
 @Module({
@@ -13,7 +14,8 @@ import { AuthModule } from "../auth/auth.module";
         UserRootResolver,
         UserMutationResolver,
         UserQueryResolver,
-        UserService
+        UserService,
+        UserHelper
     ],
     exports: [UserService]
 })

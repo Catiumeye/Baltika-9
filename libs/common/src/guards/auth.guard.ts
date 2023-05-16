@@ -1,8 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { JwtService } from "@nestjs/jwt";
-import { StrategyConfigService } from "apps/api/src/core/auth/services/strategy-config.service";
-import { JwtPayload } from "apps/api/src/core/auth/services/token.service";
 import { Request } from "express";
 import { JwtCommonService } from "../../../../apps/api/src/core/auth/services/jwt-common.service";
 

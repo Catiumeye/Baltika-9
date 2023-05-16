@@ -1,25 +1,24 @@
 import { Injectable } from "@nestjs/common";
-import { PasswordService } from "@app/common/services/password.service";
 import { PrismaService } from "@app/common/services/prisma.service";
-import { GraphQLResolveInfo } from "graphql";
-import { RegisterUserInputType } from "../../auth/models/input/register-user-input.type";
 import { GetUserInputType } from "../models/input/get-user-input.type";
-import { RegisterUserResultType } from "../../auth/models/results/register-user-result.type";
 import { GetUserResultType } from "../models/results/get-user-result.type";
-import { fieldsMap } from 'graphql-fields-list';
 import { GetUsersInput } from "../models/input/get-users-input.type";
 import { PaginationInput } from "@app/common/models/input/pagination-input.type";
 import { GetUsersResult } from "../models/results/get-users-result.type";
 import { paginationUtil } from "@app/common/utils/pagination-util";
-import { isEmail, isUUID } from "class-validator";
 import { UserCacheService } from "@app/common/cache/services/user-cache.service";
 import { BanUserResult } from "../models/results/ban-user-result.type";
 import { BanUserInput } from "../models/input/ban-user-input.type";
+import { JwtPayload } from "../../auth/services/token.service";
+import { UnbanUserInput } from "../models/input/unban-user-input.type";
+import { UnbanUserResult } from "../models/results/unban-user-result.type";
+import { UserHelper } from "./user.helper";
 @Injectable()
 export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly userCacheService: UserCacheService
+        private readonly userCacheService: UserCacheService,
+        private readonly userHelper: UserHelper
     ) {}
 
     async getUser(
@@ -63,22 +62,73 @@ export class UserService {
     }
 
     async banUser(
-        input: BanUserInput
+        input: BanUserInput,
+        userJwt: JwtPayload
     ): Promise<BanUserResult> {
+        const initiatorUser = await this.prismaService.user.findUniqueOrThrow({
+            where: { id: userJwt.sub }
+        });
+
+        const userToBan = await this.prismaService.user.findUniqueOrThrow({
+            where: input
+        });
+
+        const hasPrivilege = this.userHelper.checkRolePermission(initiatorUser, userToBan);
+
+        if (!hasPrivilege || initiatorUser.status === 'BLOCKED' || initiatorUser.status === 'FROZEN' || initiatorUser.role === 'USER') {
+            return { message: 'has no access', code: 1 };
+        }
+
         const user = await this.prismaService.user.update({
             where: input,
             data: {
-                status: 'BLOCKED'
+                status: 'BLOCKED',
+                role: 'USER'
             }
-        })
+        });
 
         if(!user) return { user, code: 1, message: 'cannot update user in db'}
 
         const cacheUpdUserStatus = await this.userCacheService.set(user.id, user);
-        if (cacheUpdUserStatus !=="OK") {
+        if (cacheUpdUserStatus !== 'OK') {
             return { user, code: 1, message: 'cannot update user cache'}
         }
 
         return { user }
+    }
+
+    async unbanUser(
+        input: UnbanUserInput,
+        userJwt: JwtPayload
+    ): Promise<UnbanUserResult> {
+        const initiatorUser = await this.prismaService.user.findUniqueOrThrow({
+            where: {
+                id: userJwt.sub
+            }
+        });
+
+        const userToUnban = await this.prismaService.user.findUniqueOrThrow({
+            where: input
+        });
+
+        const hasPrivilege = this.userHelper.checkRolePermission(initiatorUser, userToUnban);
+
+        if(!hasPrivilege || initiatorUser.status !== 'ACTIVE') {
+            return { message: 'has no access', code: 1 };
+        }
+
+        const user = await this.prismaService.user.update({
+            where: input,
+            data: {
+                status: 'ACTIVE'
+            }
+        });
+
+        const cacheUpdUserStatus = await this.userCacheService.set(user.id, user);
+        if (cacheUpdUserStatus !== 'OK') {
+            return { user, code: 1, message: 'cannot update user cache'}
+        }
+
+        return { user };
     }
 }
