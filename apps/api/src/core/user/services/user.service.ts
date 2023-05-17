@@ -13,6 +13,8 @@ import { JwtPayload } from "../../auth/services/token.service";
 import { UnbanUserInput } from "../models/input/unban-user-input.type";
 import { UnbanUserResult } from "../models/results/unban-user-result.type";
 import { UserHelper } from "./user.helper";
+import { DeleteUserResult } from "../models/results/delete-user-result.type";
+import { DeleteUserInput } from "../models/input/delete-user-input.type";
 @Injectable()
 export class UserService {
     constructor(
@@ -44,9 +46,9 @@ export class UserService {
                 files: true,
                 auth: true
             }
-        })
+        });
 
-        return {user: user}
+        return { user }
     }
 
     async getUsers(
@@ -56,7 +58,7 @@ export class UserService {
         const users = await this.prismaService.user.findMany({
             where: input,
             ...paginationUtil(pagination)
-        })
+        });
         
         return { users };
     }
@@ -130,5 +132,32 @@ export class UserService {
         }
 
         return { user };
+    }
+
+    // TODO
+    async deleteUser(
+        input: DeleteUserInput,
+        userJwt: JwtPayload
+    ): Promise<DeleteUserResult> {
+        const userToDelete = await this.prismaService.user.findUniqueOrThrow({
+            where: input
+        })
+
+        if (userToDelete.id !== userJwt.sub) {
+            const initiatorUser = await this.prismaService.user.findUniqueOrThrow({
+                where: {
+                    id: userJwt.sub
+                }
+            });
+
+            if (initiatorUser.role !== 'ADMIN') return { code: 1, message: 'has no access' }
+            await this.prismaService.user.delete({
+                where: input
+            })
+
+            await this.userCacheService.delete(userToDelete.id);
+        }
+
+        return {};
     }
 }

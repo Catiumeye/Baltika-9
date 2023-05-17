@@ -46,6 +46,7 @@ model User {
   role       UserRole   @default(USER)
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
+  deleted    DateTime?  @map("deleted_at")
 
   auth    Auth?
   profile UserProfile?

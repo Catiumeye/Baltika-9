@@ -1,5 +1,5 @@
 import { UserService } from '../services/user.service';
-import { Args, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, ID, ResolveField, Resolver } from '@nestjs/graphql';
 import { UserMutationType, UserRootResolver } from './user-root.resolver';
 import { BanUserInput } from '../models/input/ban-user-input.type';
 import { BanUserResult } from '../models/results/ban-user-result.type';
@@ -8,6 +8,8 @@ import { UserData } from '@app/common/decorators/user-data.decorator';
 import { JwtPayload } from '../../auth/services/token.service';
 import { UnbanUserResult } from '../models/results/unban-user-result.type';
 import { UnbanUserInput } from '../models/input/unban-user-input.type';
+import { DeleteUserResult } from '../models/results/delete-user-result.type';
+import { DeleteUserInput } from '../models/input/delete-user-input.type';
 
 @Resolver(UserMutationType)
 export class UserMutationResolver extends UserRootResolver {
@@ -15,14 +17,14 @@ export class UserMutationResolver extends UserRootResolver {
         super();
     }
 
-    // @ResolveField(() => User)
-    // async deleteUser(
-    //     @Args('id') id: string
-    // ): Promise<number> {
-    //     console.log(id);
-        
-    //     return 0;
-    // }
+    @RolePermission(null)
+    @ResolveField(() => DeleteUserResult)
+    async deleteUser(
+        @Args() input: DeleteUserInput,
+        @UserData() user: JwtPayload
+    ): Promise<DeleteUserResult> {
+        return await this.userService.deleteUser(input, user);
+    }
 
     @RolePermission(['MODER', 'ADMIN'])
     @ResolveField(() => BanUserResult)

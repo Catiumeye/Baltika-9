@@ -25,4 +25,8 @@ export abstract class BaseCacheService<T extends CacheType> {
     async set(id: string, data: object) {
         return await this.redis.set(`${this.entity}:${id}`, JSON.stringify(data), 'EX', 86400);
     }
+
+    async delete(id: string) {
+        return await this.redis.del(`${this.entity}:${id}`);
+    }
 }

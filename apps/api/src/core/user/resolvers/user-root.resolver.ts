@@ -5,11 +5,12 @@ import { GetUsersResult } from '../models/results/get-users-result.type';
 import { User } from '../user.entity';
 import { BanUserResult } from '../models/results/ban-user-result.type';
 import { UnbanUserResult } from '../models/results/unban-user-result.type';
+import { DeleteUserResult } from '../models/results/delete-user-result.type';
 
 @ObjectType()
 export class UserMutationType {
-    @Field(() => User)
-    delete: User;
+    @Field(() => DeleteUserResult)
+    deleteUser: DeleteUserResult;
 
     @Field(() => BanUserResult)
     banUser: BanUserResult;
